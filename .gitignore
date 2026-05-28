@@ -1,0 +1,49 @@
+# Operating system artifacts
+Thumbs.db
+.DS_Store
+Desktop.ini
+ehthumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+*.whl
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+build/pyinstaller_build/
+build/pyinstaller_dist/
+
+# Data directories (runtime-generated)
+app/backups/
+app/database/
+app/logs/
+app/temp/
+app/generated_letters/
+app/attachments/
+
+# Deployment
+*.zip
+*.exe
+*.msi
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
