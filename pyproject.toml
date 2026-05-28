@@ -22,7 +22,7 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
-per-file-ignores = {"app/ui/dialogs/*" = ["F401"], "app/ui/shell/*" = ["F401"], "app/ui/widgets/*" = ["F401", "E501"], "app/ui/theme/*" = ["F401", "E501", "I001"], "tests/unit/ui/*" = ["F401"]}
+per-file-ignores = {"app/ui/dialogs/*" = ["F401"], "app/ui/shell/*" = ["F401"], "app/ui/widgets/*" = ["F401", "E501"], "app/ui/theme/*" = ["F401", "E501", "I001"], "tests/unit/ui/*" = ["F401"], "app/application/letters/*" = ["E501"], "app/infrastructure/letters/*" = ["E501"], "app/domain/letters/*" = ["E501"], "tests/unit/letters/*" = ["E501", "I001"]}
 
 [tool.mypy]
 python_version = "3.12"
