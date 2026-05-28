@@ -47,3 +47,4 @@ app/attachments/
 # Environment
 .env
 .env.local
+.github/
