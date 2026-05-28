@@ -4,16 +4,9 @@ from app.ui.navigation.screen_router import ScreenEntry, ScreenRouter
 
 try:
     from PySide6.QtCore import Qt, Signal
-    from PySide6.QtGui import QFont
     from PySide6.QtWidgets import (
-        QFrame,
         QHBoxLayout,
         QLabel,
-        QListWidget,
-        QListWidgetItem,
-        QPushButton,
-        QSizePolicy,
-        QToolButton,
         QVBoxLayout,
         QWidget,
     )

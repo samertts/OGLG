@@ -41,7 +41,7 @@ from app.ui.viewmodels.screen_viewmodels import (
     SettingsViewModel,
     UserManagementViewModel,
 )
-from app.ui.widgets.screens import (
+from app.ui.widgets import (
     AboutScreen,
     ArchiveBrowserScreen,
     BackupCenterScreen,
@@ -56,8 +56,7 @@ from app.ui.widgets.screens import (
 
 try:
     from PySide6.QtCore import Qt
-    from PySide6.QtGui import QFont
-    from PySide6.QtWidgets import QApplication, QWidget
+    from PySide6.QtWidgets import QApplication
 except ImportError:
     QApplication = object
 

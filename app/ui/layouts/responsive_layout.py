@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 try:
-    from PySide6.QtCore import QSize, Qt, QTimer
-    from PySide6.QtWidgets import QGridLayout, QLayout, QWidget
+    from PySide6.QtWidgets import QGridLayout, QWidget
 except ImportError:
     QWidget = object
 
