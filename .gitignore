@@ -47,4 +47,6 @@ app/attachments/
 # Environment
 .env
 .env.local
-.github/
+# .github/  -- now tracked for governance; specific exclusions below
+.github/workflows/__pycache__/
+.github/workflows/

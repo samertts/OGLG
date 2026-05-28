@@ -18,23 +18,32 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 def cmd_build_portable(args: argparse.Namespace) -> int:
     return subprocess.call(
-        [sys.executable, str(PROJECT_ROOT / "build" / "build_portable.py"),
-         "--version", args.version,
-         "--output-dir", args.output_dir],
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "build" / "build_portable.py"),
+            "--version",
+            args.version,
+            "--output-dir",
+            args.output_dir,
+        ],
     )
 
 
 def cmd_build_installer(args: argparse.Namespace) -> int:
     return subprocess.call(
-        [sys.executable, str(PROJECT_ROOT / "build" / "build_installer.py"),
-         "--version", args.version,
-         "--output-dir", args.output_dir],
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "build" / "build_installer.py"),
+            "--version",
+            args.version,
+            "--output-dir",
+            args.output_dir,
+        ],
     )
 
 
@@ -70,9 +79,14 @@ def cmd_lint(_args: argparse.Namespace) -> int:
 
 def cmd_release(args: argparse.Namespace) -> int:
     return subprocess.call(
-        [sys.executable, str(PROJECT_ROOT / "scripts" / "release.py"),
-         "--version", args.version,
-         "--dist-dir", args.output_dir],
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "scripts" / "release.py"),
+            "--version",
+            args.version,
+            "--dist-dir",
+            args.output_dir,
+        ],
     )
 
 

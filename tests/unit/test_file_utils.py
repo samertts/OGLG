@@ -2,12 +2,10 @@
 
 from pathlib import Path
 
-import pytest
-
 from app.utils.file_utils import (
+    atomic_move,
     atomic_write,
     atomic_write_stream,
-    atomic_move,
     cleanup_temp_files,
     compute_data_hash,
     compute_file_hash,
@@ -47,6 +45,7 @@ class TestAtomicWriteStream:
     def test_atomic_write_stream(self, tmp_path: Path) -> None:
         target = tmp_path / "test.bin"
         import io
+
         stream = io.BytesIO(b"stream data")
         result = atomic_write_stream(target, stream)
         assert result == target.resolve()
@@ -131,6 +130,7 @@ class TestCleanupTempFiles:
         old = tmp_path / "old.tmp"
         old.write_bytes(b"old")
         import time
+
         time.sleep(0.01)
         assert cleanup_temp_files(tmp_path, max_age_hours=0) >= 1
         assert not old.exists()

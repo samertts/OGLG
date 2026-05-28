@@ -12,9 +12,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
-from app.deployment.paths import get_data_dir, get_runtime_dir, resolve_bundled_path
+from app.deployment.paths import get_data_dir, get_runtime_dir
 from app.deployment.platform import detect_platform
 from app.utils.logger import get_logger
 
@@ -92,6 +91,7 @@ def validate_sqlite_integrity(db_path: Path) -> bool:
         return True
     try:
         import sqlite3
+
         conn = sqlite3.connect(str(db_path))
         cursor = conn.cursor()
         cursor.execute("PRAGMA integrity_check")
@@ -140,6 +140,7 @@ def validate_disk_space(min_free_mb: int = 100) -> tuple[bool, int]:
         stat = data_dir.stat()
         if hasattr(stat, "st_dev"):
             import os
+
             usage = os.statvfs(data_dir)
             free_mb = (usage.f_bavail * usage.f_frsize) // (1024 * 1024)
             return free_mb >= min_free_mb, free_mb

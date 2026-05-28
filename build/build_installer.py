@@ -58,10 +58,14 @@ def build_pyinstaller(project_root: Path) -> Path:
     print(f"[installer] Running PyInstaller: {spec_path}")
     result = subprocess.run(
         [
-            sys.executable, "-m", "PyInstaller",
+            sys.executable,
+            "-m",
+            "PyInstaller",
             str(spec_path),
-            "--workpath", str(build_dir),
-            "--distpath", str(dist_dir),
+            "--workpath",
+            str(build_dir),
+            "--distpath",
+            str(dist_dir),
             "--clean",
         ],
         cwd=str(project_root),
@@ -165,7 +169,7 @@ def main() -> None:
         iscc_path=args.iscc_path,
     )
 
-    print(f"\n[installer] Installer build complete.")
+    print("\n[installer] Installer build complete.")
     print(f"  Output: {output_dir}")
 
 

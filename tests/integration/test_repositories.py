@@ -5,10 +5,8 @@ Tests all repository CRUD operations using an in-memory SQLite database.
 
 from __future__ import annotations
 
-from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import uuid4
 
-import pytest
 from sqlalchemy.orm import Session
 
 from app.core.entities.attachment import Attachment
@@ -17,7 +15,7 @@ from app.core.entities.backup_log import BackupLog
 from app.core.entities.department import Department
 from app.core.entities.letter import Letter
 from app.core.entities.user import User
-from app.core.enums import BackupType, LetterStatus, Priority, UserRole
+from app.core.enums import BackupType, UserRole
 from app.database.repositories import (
     SQLAlchemyAttachmentRepository,
     SQLAlchemyAuditRepository,
@@ -75,7 +73,9 @@ class TestUserRepository:
 
     def test_find_by_username(self, in_memory_session: Session) -> None:
         repo = SQLAlchemyUserRepository(in_memory_session)
-        user = User(id=uuid4(), username="operator", full_name="Op", role=UserRole.EDITOR, password_hash="x")
+        user = User(
+            id=uuid4(), username="operator", full_name="Op", role=UserRole.EDITOR, password_hash="x"
+        )
         repo.save(user)
         found = repo.find_by_username("operator")
         assert found is not None

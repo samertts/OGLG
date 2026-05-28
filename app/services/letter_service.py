@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from hashlib import sha256
 from uuid import UUID, uuid4
 
 from app.core.entities.letter import Letter
-from app.core.enums import LetterStatus, Priority
+from app.core.enums import LetterStatus
 from app.core.exceptions.base import (
     BusinessRuleViolation,
     EntityNotFoundError,
@@ -40,9 +40,7 @@ class LetterService:
         seq = self.letter_repo.next_sequence_for_year(year)
         number = f"{year}-{seq:04d}"
 
-        content_hash = sha256(
-        (dto.subject + dto.body).encode("utf-8")
-        ).hexdigest()
+        content_hash = sha256((dto.subject + dto.body).encode("utf-8")).hexdigest()
 
         entity = Letter(
             id=uuid4(),
@@ -97,9 +95,7 @@ class LetterService:
                 setattr(entity, field_name, value)
 
         entity.mark_updated(dto.updated_by_id or entity.created_by_id)
-        entity.content_hash = sha256(
-            (entity.subject + entity.body).encode("utf-8")
-        ).hexdigest()
+        entity.content_hash = sha256((entity.subject + entity.body).encode("utf-8")).hexdigest()
 
         saved = self.letter_repo.save(entity)
         logger.info("Letter updated", extra={"id": str(letter_id)})
@@ -130,7 +126,7 @@ class LetterService:
         items = self.letter_repo.search(query, offset, limit)
         total = self.letter_repo.count_all()
         return PaginatedResult(
-            items=[LetterResponseDTO.from_entity(l) for l in items],
+            items=[LetterResponseDTO.from_entity(item) for item in items],
             total=total,
             offset=offset,
             limit=limit,

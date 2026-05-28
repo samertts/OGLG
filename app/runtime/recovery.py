@@ -10,7 +10,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
 
 from app.deployment.validation import validate_sqlite_integrity
 from app.utils.file_utils import cleanup_temp_files
@@ -67,9 +66,7 @@ class CrashRecoveryBootstrap:
         self._clear_stale_archives(result)
 
         result.recovered = (
-            result.integrity_ok
-            or result.temp_files_cleaned > 0
-            or result.stale_lock_cleared
+            result.integrity_ok or result.temp_files_cleaned > 0 or result.stale_lock_cleared
         )
 
         if result.recovered:
@@ -133,6 +130,7 @@ class CrashRecoveryBootstrap:
         """Attempt VACUUM-based repair on corrupted database."""
         try:
             import sqlite3
+
             conn = sqlite3.connect(str(self.db_path))
             conn.execute("VACUUM")
             conn.close()

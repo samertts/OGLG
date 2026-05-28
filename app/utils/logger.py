@@ -4,11 +4,8 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Any
 
 import loguru
-
-from app.config.settings import Settings
 
 
 class InterceptHandler(logging.Handler):
@@ -23,9 +20,7 @@ class InterceptHandler(logging.Handler):
         while frame and frame.f_code.co_filename == logging.__file__:
             frame = frame.f_back
             depth += 1
-        loguru.logger.opt(depth=depth, exception=record.exc_info).log(
-            level, record.getMessage()
-        )
+        loguru.logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
 
 
 def configure_logging(
@@ -48,9 +43,7 @@ def configure_logging(
 
     loguru.logger.remove()
 
-    fmt = (
-        "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<7} | {name}:{function}:{line} | {message}"
-    )
+    fmt = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<7} | {name}:{function}:{line} | {message}"
     if json_format:
         fmt = json.dumps
 

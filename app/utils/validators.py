@@ -25,9 +25,7 @@ def validate_required_string(value: Any, field_name: str, max_length: int = 500)
     if not value:
         raise ValueError(f"{field_name} cannot be empty")
     if len(value) > max_length:
-        raise ValueError(
-            f"{field_name} exceeds maximum length of {max_length} characters"
-        )
+        raise ValueError(f"{field_name} exceeds maximum length of {max_length} characters")
     return value
 
 

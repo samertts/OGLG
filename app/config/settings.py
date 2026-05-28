@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
@@ -98,6 +98,7 @@ class Settings:
 
 def dataclass_fields(cls: type) -> list:
     import dataclasses
+
     return dataclasses.fields(cls)
 
 

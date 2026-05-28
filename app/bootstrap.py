@@ -6,9 +6,8 @@ together for clean startup and testability.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 from sqlalchemy.orm import Session
 
@@ -22,20 +21,15 @@ from app.database.repositories import (
     SQLAlchemyLetterRepository,
     SQLAlchemyUserRepository,
 )
-from app.runtime.cleanup import BackupRotationEngine
 from app.runtime.lifecycle import LifecycleLogger
-from app.runtime.recovery import CrashRecoveryBootstrap
 from app.services import AuditService, BackupService, LetterService
-from app.utils.file_utils import cleanup_temp_files, ensure_directory
+from app.utils.file_utils import cleanup_temp_files
 from app.utils.logger import configure_logging, get_logger
 from app.utils.paths import (
     ensure_data_directories,
     get_config_path,
-    get_database_path,
     get_default_config_path,
-    is_portable_mode,
     resolve_data_directory,
-    resolve_project_root,
 )
 
 logger = get_logger("app.bootstrap")
@@ -214,8 +208,8 @@ def _run_migrations(db_manager: DatabaseManager) -> None:
     Uses a subprocess call to alembic for simplicity. Falls back
     gracefully if alembic is not available or migrations fail.
     """
-    from alembic.config import Config
     from alembic import command
+    from alembic.config import Config
 
     from app.utils.paths import get_migrations_dir
 

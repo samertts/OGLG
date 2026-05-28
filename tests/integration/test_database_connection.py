@@ -19,9 +19,7 @@ class TestDatabaseEngine:
         db_path = tmp_path / "test.db"
         engine = create_database_engine(db_path)
         with engine.connect() as conn:
-            row = conn.execute(
-                __import__("sqlalchemy").text("PRAGMA journal_mode")
-            ).fetchone()
+            row = conn.execute(__import__("sqlalchemy").text("PRAGMA journal_mode")).fetchone()
             assert row[0] == "wal"
         engine.dispose()
 
@@ -29,9 +27,7 @@ class TestDatabaseEngine:
         db_path = tmp_path / "test.db"
         engine = create_database_engine(db_path)
         with engine.connect() as conn:
-            row = conn.execute(
-                __import__("sqlalchemy").text("PRAGMA foreign_keys")
-            ).fetchone()
+            row = conn.execute(__import__("sqlalchemy").text("PRAGMA foreign_keys")).fetchone()
             assert row[0] == 1
         engine.dispose()
 

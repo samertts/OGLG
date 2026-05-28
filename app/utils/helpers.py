@@ -34,6 +34,7 @@ def save_json(path: Path, data: dict[str, Any], atomic: bool = True) -> None:
     content = json.dumps(data, indent=2, ensure_ascii=False, default=str).encode("utf-8")
     if atomic:
         from app.utils.file_utils import atomic_write
+
         atomic_write(path, content)
     else:
         path.write_bytes(content)
@@ -77,6 +78,7 @@ def sanitize_filename(name: str) -> str:
         Sanitized filename safe for filesystem use.
     """
     import re
+
     safe = re.sub(r'[\\/:*?"<>|\x00-\x1f]', "_", name)
     safe = safe.strip("._")
     if len(safe) > 200:

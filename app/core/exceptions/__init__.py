@@ -1,12 +1,12 @@
 from app.core.exceptions.base import (
-    DomainError,
-    EntityNotFoundError,
-    DuplicateEntityError,
-    ValidationError,
-    ImmutableEntityError,
-    PermissionDeniedError,
     AuthenticationError,
     BusinessRuleViolation,
+    DomainError,
+    DuplicateEntityError,
+    EntityNotFoundError,
+    ImmutableEntityError,
+    PermissionDeniedError,
+    ValidationError,
 )
 
 __all__ = [

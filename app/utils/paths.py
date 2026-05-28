@@ -105,9 +105,7 @@ def get_migrations_dir() -> Path:
     Returns:
         Path to the migrations directory.
     """
-    return (
-        resolve_project_root() / "app" / "database" / "migrations"
-    )
+    return resolve_project_root() / "app" / "database" / "migrations"
 
 
 def get_log_dir(data_dir: Path) -> Path:

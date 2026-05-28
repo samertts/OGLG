@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
-from typing import Any
 
 
 def compute_file_hash_sha256(path: Path) -> str:
@@ -44,7 +43,9 @@ def compute_file_hash_sha1(path: Path) -> str:
     return h.hexdigest()
 
 
-def generate_checksums(directory: Path, patterns: list[str] | None = None) -> dict[str, dict[str, str]]:
+def generate_checksums(
+    directory: Path, patterns: list[str] | None = None
+) -> dict[str, dict[str, str]]:
     """Generate SHA-256 and SHA-1 checksums for all files in a directory.
 
     Args:

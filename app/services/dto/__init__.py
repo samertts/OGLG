@@ -2,14 +2,19 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Generic, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar
 from uuid import UUID
 
-T = TypeVar("T")
-
 from app.core.enums import BackupType, LanguageTag, LetterStatus, Priority
+
+if TYPE_CHECKING:
+    from app.core.entities.audit_entry import AuditEntry
+    from app.core.entities.backup_log import BackupLog
+    from app.core.entities.letter import Letter
+
+T = TypeVar("T")
 
 
 @dataclass

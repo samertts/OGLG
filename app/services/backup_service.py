@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from uuid import UUID, uuid4
@@ -73,16 +73,10 @@ class BackupService:
         return BackupResponseDTO.from_entity(found) if found else None
 
     def find_all(self, offset: int = 0, limit: int = 50) -> list[BackupResponseDTO]:
-        return [
-            BackupResponseDTO.from_entity(e)
-            for e in self.backup_repo.find_all(offset, limit)
-        ]
+        return [BackupResponseDTO.from_entity(e) for e in self.backup_repo.find_all(offset, limit)]
 
     def find_by_type(self, type: BackupType) -> list[BackupResponseDTO]:
-        return [
-            BackupResponseDTO.from_entity(e)
-            for e in self.backup_repo.find_by_type(type)
-        ]
+        return [BackupResponseDTO.from_entity(e) for e in self.backup_repo.find_by_type(type)]
 
     def find_latest(self) -> BackupResponseDTO | None:
         found = self.backup_repo.find_latest()

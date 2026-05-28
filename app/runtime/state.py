@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import enum
 from dataclasses import dataclass, field
-from typing import Any
 
 from app.utils.logger import get_logger
 
@@ -35,8 +34,16 @@ _VALID_TRANSITIONS: dict[RuntimeState, set[RuntimeState]] = {
     RuntimeState.INITIALIZING: {RuntimeState.VALIDATING, RuntimeState.FAILED},
     RuntimeState.VALIDATING: {RuntimeState.STARTING, RuntimeState.RECOVERING, RuntimeState.FAILED},
     RuntimeState.STARTING: {RuntimeState.RUNNING, RuntimeState.FAILED},
-    RuntimeState.RUNNING: {RuntimeState.RECOVERING, RuntimeState.SHUTTING_DOWN, RuntimeState.FAILED},
-    RuntimeState.RECOVERING: {RuntimeState.VALIDATING, RuntimeState.SHUTTING_DOWN, RuntimeState.FAILED},
+    RuntimeState.RUNNING: {
+        RuntimeState.RECOVERING,
+        RuntimeState.SHUTTING_DOWN,
+        RuntimeState.FAILED,
+    },
+    RuntimeState.RECOVERING: {
+        RuntimeState.VALIDATING,
+        RuntimeState.SHUTTING_DOWN,
+        RuntimeState.FAILED,
+    },
     RuntimeState.SHUTTING_DOWN: {RuntimeState.STOPPED, RuntimeState.FAILED},
     RuntimeState.STOPPED: {RuntimeState.UNINITIALIZED},
     RuntimeState.FAILED: {RuntimeState.UNINITIALIZED, RuntimeState.RECOVERING},
@@ -97,9 +104,7 @@ class RuntimeStateMachine:
 
     def has_passed_through(self, state: RuntimeState) -> bool:
         """Check if the machine has ever been in the given state."""
-        return self._transition_count > 0 and (
-            self.previous == state or self.current == state
-        )
+        return self._transition_count > 0 and (self.previous == state or self.current == state)
 
     @property
     def is_running(self) -> bool:

@@ -13,11 +13,9 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
 import sys
 import zipfile
 from pathlib import Path
-from typing import Any
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -48,9 +46,9 @@ def validate_executable_build(build_dir: Path, strict: bool) -> int:
     Returns:
         Exit code (0 = pass, 1 = failure).
     """
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Validating build directory: {build_dir}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     errors: list[str] = []
     warnings: list[str] = []
@@ -146,9 +144,9 @@ def validate_portable_zip(zip_path: Path, strict: bool) -> int:
     Returns:
         Exit code (0 = pass, 1 = failure).
     """
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Validating portable ZIP: {zip_path}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     errors: list[str] = []
     warnings: list[str] = []
@@ -228,7 +226,7 @@ def _report(errors: list[str], warnings: list[str], strict: bool = False) -> int
         for e in errors:
             print(f"    ✗ {e}")
     else:
-        print(f"\n  ✓ No errors")
+        print("\n  ✓ No errors")
 
     if errors:
         return 1

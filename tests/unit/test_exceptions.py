@@ -1,7 +1,5 @@
 """Tests for domain exception hierarchy."""
 
-import pytest
-
 from app.core.exceptions import (
     AuthenticationError,
     BusinessRuleViolation,

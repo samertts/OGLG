@@ -3,8 +3,6 @@
 import json
 from pathlib import Path
 
-import pytest
-
 from app.config.settings import Settings, load_defaults, load_settings
 
 

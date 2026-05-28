@@ -21,15 +21,14 @@ from __future__ import annotations
 import argparse
 import signal
 import sys
-from pathlib import Path
 from typing import NoReturn
 
 from app.bootstrap import Container, build_container
 from app.deployment.fonts import register_application_fonts
 from app.deployment.validation import run_startup_validation
-from app.diagnostics.startup import StartupDiagnosticsEngine
 from app.diagnostics.environment import EnvironmentVerifier
 from app.diagnostics.readiness import DeploymentReadinessValidator
+from app.diagnostics.startup import StartupDiagnosticsEngine
 from app.runtime.archive import ArchiveDirectoryInitializer
 from app.runtime.cleanup import TempCleanupEngine
 from app.runtime.lifecycle import LifecycleLogger
@@ -89,7 +88,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def show_version() -> NoReturn:
-    from app import __version__, __app_name__, __org_name__
+    from app import __app_name__, __org_name__, __version__
 
     print(f"{__app_name__} v{__version__}")
     print(f"{__org_name__}")

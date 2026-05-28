@@ -9,9 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
 
-from app.utils.file_utils import cleanup_temp_files, get_disk_usage
+from app.utils.file_utils import cleanup_temp_files
 from app.utils.logger import get_logger
 
 logger = get_logger("app.runtime.cleanup")
@@ -153,9 +152,7 @@ class BackupRotationEngine:
 
         return result
 
-    def _remove_age_expired(
-        self, backups: list[Path], result: RotationResult
-    ) -> int:
+    def _remove_age_expired(self, backups: list[Path], result: RotationResult) -> int:
         removed = 0
         cutoff = datetime.now() - timedelta(days=self.max_age_days)
         for backup in backups:
@@ -169,9 +166,7 @@ class BackupRotationEngine:
                 result.errors.append(f"Failed to remove {backup.name}: {exc}")
         return removed
 
-    def _remove_excess_count(
-        self, backups: list[Path], result: RotationResult
-    ) -> int:
+    def _remove_excess_count(self, backups: list[Path], result: RotationResult) -> int:
         removed = 0
         remaining = [b for b in backups if b.exists()]
         while len(remaining) > self.max_backups:

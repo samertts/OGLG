@@ -6,11 +6,10 @@ from the PyInstaller-packaged assets directory.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
-from app.deployment.paths import get_runtime_dir, resolve_bundled_path
+from app.deployment.paths import get_runtime_dir
 from app.utils.logger import get_logger
 
 logger = get_logger("app.deployment.fonts")
@@ -33,7 +32,11 @@ class FontManager:
         {"name": "Amiri", "filename": "Amiri-Regular.ttf", "style": "regular"},
         {"name": "Amiri", "filename": "Amiri-Bold.ttf", "style": "bold"},
         {"name": "Amiri", "filename": "Amiri-Italic.ttf", "style": "italic"},
-        {"name": "Noto Naskh Arabic", "filename": "NotoNaskhArabic-Regular.ttf", "style": "regular"},
+        {
+            "name": "Noto Naskh Arabic",
+            "filename": "NotoNaskhArabic-Regular.ttf",
+            "style": "regular",
+        },
         {"name": "Noto Naskh Arabic", "filename": "NotoNaskhArabic-Bold.ttf", "style": "bold"},
         {"name": "Traditional Arabic", "filename": "TraditionalArabic.ttf", "style": "regular"},
     ]

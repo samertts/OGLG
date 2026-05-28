@@ -12,14 +12,12 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
-import os
 import shutil
 import subprocess
 import sys
 import zipfile
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -61,10 +59,14 @@ def build_pyinstaller(project_root: Path) -> Path:
     print(f"[build] Running PyInstaller: {spec_path}")
     result = subprocess.run(
         [
-            sys.executable, "-m", "PyInstaller",
+            sys.executable,
+            "-m",
+            "PyInstaller",
             str(spec_path),
-            "--workpath", str(build_dir),
-            "--distpath", str(dist_dir),
+            "--workpath",
+            str(build_dir),
+            "--distpath",
+            str(dist_dir),
             "--clean",
         ],
         cwd=str(project_root),
@@ -134,7 +136,7 @@ def create_portable_distribution(
         encoding="utf-8",
     )
 
-    print(f"[build] Creating ZIP archive...")
+    print("[build] Creating ZIP archive...")
     zip_path = output_dir / f"{portable_name}.zip"
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
         for file_path in portable_dir.rglob("*"):
@@ -142,7 +144,9 @@ def create_portable_distribution(
                 arcname = str(file_path.relative_to(portable_dir))
                 zf.write(file_path, arcname)
 
-    print(f"[build] ZIP archive created: {zip_path} ({zip_path.stat().st_size / 1024 / 1024:.1f} MB)")
+    print(
+        f"[build] ZIP archive created: {zip_path} ({zip_path.stat().st_size / 1024 / 1024:.1f} MB)"
+    )
 
     # Clean up uncompressed directory
     shutil.rmtree(portable_dir)
@@ -188,7 +192,7 @@ def main() -> None:
         version=args.version,
     )
 
-    print(f"\n[build] Portable distribution ready:")
+    print("\n[build] Portable distribution ready:")
     print(f"  ZIP:    {zip_path}")
     print(f"  SHA256: {txt_path}")
 

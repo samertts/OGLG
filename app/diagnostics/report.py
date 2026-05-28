@@ -6,13 +6,13 @@ report for startup logging and troubleshooting.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from typing import Any
 
-from app.diagnostics.environment import CheckSeverity, EnvironmentCheck
-from app.deployment.paths import detect_deployment_mode, DeploymentPaths
+from app.deployment.paths import DeploymentPaths, detect_deployment_mode
 from app.deployment.platform import get_platform_info
+from app.diagnostics.environment import EnvironmentCheck
 from app.utils.logger import get_logger
 
 logger = get_logger("app.diagnostics.report")
@@ -98,6 +98,5 @@ class EnvironmentDiagnosticsReport:
         passed = sum(1 for c in self.checks if c["passed"])
         total = len(self.checks)
         return (
-            f"[{self.deploy_mode}] Health: {self.health_score:.0%} "
-            f"({passed}/{total} checks passed)"
+            f"[{self.deploy_mode}] Health: {self.health_score:.0%} ({passed}/{total} checks passed)"
         )

@@ -4,7 +4,7 @@ Provides runtime diagnostics for environment validation, readiness
 assessment, and diagnostic report generation.
 """
 
-from app.diagnostics.environment import EnvironmentVerifier, EnvironmentCheck
+from app.diagnostics.environment import EnvironmentCheck, EnvironmentVerifier
 from app.diagnostics.readiness import DeploymentReadinessValidator, ReadinessCheck, ReadinessReport
 from app.diagnostics.report import EnvironmentDiagnosticsReport
 

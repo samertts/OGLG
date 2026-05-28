@@ -1,6 +1,5 @@
 """Tests for path management utilities."""
 
-import sys
 from pathlib import Path
 
 import pytest
@@ -35,9 +34,7 @@ class TestResolveDataDirectory:
         assert "data" in str(data_dir)
 
     def test_installed_data_dir(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(
-            "app.utils.paths.platform.system", lambda: "Linux"
-        )
+        monkeypatch.setattr("app.utils.paths.platform.system", lambda: "Linux")
         monkeypatch.setattr("pathlib.Path.home", lambda: Path("/home/user"))
         data_dir = resolve_data_directory(portable=False)
         assert str(data_dir) == "/home/user/.local/share/oglg"

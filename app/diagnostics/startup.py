@@ -7,11 +7,10 @@ report.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime
+from dataclasses import dataclass
 from typing import Any
 
-from app.diagnostics.environment import CheckSeverity, EnvironmentCheck, EnvironmentVerifier
+from app.diagnostics.environment import EnvironmentCheck, EnvironmentVerifier
 from app.diagnostics.readiness import DeploymentReadinessValidator, ReadinessReport
 from app.diagnostics.report import EnvironmentDiagnosticsReport
 from app.runtime.lifecycle import LifecycleLogger

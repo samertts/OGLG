@@ -8,7 +8,6 @@ from __future__ import annotations
 import platform as _platform
 import sys
 from dataclasses import dataclass
-from typing import Literal
 
 
 @dataclass(frozen=True)
@@ -131,8 +130,10 @@ def _check_admin() -> bool:
     """
     try:
         import os as _os
+
         if _platform.system() == "Windows":
             import ctypes
+
             return ctypes.windll.shell32.IsUserAnAdmin() != 0
         return _os.geteuid() == 0
     except Exception:

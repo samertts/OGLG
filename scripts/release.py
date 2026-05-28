@@ -12,10 +12,8 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
-import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -24,7 +22,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--version", required=True, help="Version string (e.g. 1.0.0)")
     parser.add_argument("--dist-dir", default="./dist", help="Distribution artifacts directory")
-    parser.add_argument("--output", default="./RELEASE_NOTES.md", help="Output path for release notes")
+    parser.add_argument(
+        "--output", default="./RELEASE_NOTES.md", help="Output path for release notes"
+    )
     return parser.parse_args(argv)
 
 

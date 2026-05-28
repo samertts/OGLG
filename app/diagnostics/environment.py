@@ -6,10 +6,9 @@ system meets minimum requirements for safe operation.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum, auto
 from pathlib import Path
-from typing import Any
 
 from app.utils.logger import get_logger
 
@@ -78,6 +77,7 @@ class EnvironmentVerifier:
 
     def _check_python_version(self) -> EnvironmentCheck:
         import sys
+
         v = sys.version_info
         passed = (v.major, v.minor) >= self.min_python
         return EnvironmentCheck(
@@ -87,13 +87,17 @@ class EnvironmentVerifier:
             message=(
                 f"Python {v.major}.{v.minor}.{v.micro} detected"
                 if passed
-                else f"Python {v.major}.{v.minor} < minimum {self.min_python[0]}.{self.min_python[1]}"
+                else (
+                    f"Python {v.major}.{v.minor}"
+                    f" < minimum {self.min_python[0]}.{self.min_python[1]}"
+                )
             ),
             detail=sys.version,
         )
 
     def _check_sqlite_version(self) -> EnvironmentCheck:
         import sqlite3
+
         version = sqlite3.sqlite_version
         parts = tuple(int(p) for p in version.split("."))
         passed = parts >= self.min_sqlite
@@ -111,6 +115,7 @@ class EnvironmentVerifier:
 
     def _check_disk_space(self) -> EnvironmentCheck:
         import shutil
+
         warnings: list[str] = []
         for d in self.data_dirs:
             try:
@@ -134,6 +139,7 @@ class EnvironmentVerifier:
     def _check_system_ram(self) -> EnvironmentCheck:
         try:
             import psutil
+
             ram_mb = psutil.virtual_memory().total / (1024 * 1024)
             passed = ram_mb >= self.min_ram_mb
             return EnvironmentCheck(
@@ -158,6 +164,7 @@ class EnvironmentVerifier:
 
     def _check_filesystem_encoding(self) -> EnvironmentCheck:
         import sys
+
         encoding = sys.getfilesystemencoding()
         passed = encoding.lower() in ("utf-8", "utf8")
         return EnvironmentCheck(
@@ -171,6 +178,7 @@ class EnvironmentVerifier:
     def _check_display_dpi(self) -> EnvironmentCheck:
         try:
             import ctypes
+
             try:
                 user32 = ctypes.windll.user32
                 dpi = user32.GetDpiForWindow(user32.GetDesktopWindow())

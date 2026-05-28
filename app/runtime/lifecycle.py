@@ -7,7 +7,7 @@ for diagnostics and audit trails.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any
 
 from app.utils.logger import get_logger
@@ -77,7 +77,13 @@ class LifecycleLogger:
         )
         self._events.append(event)
 
-        log_fn = logger.info if status == "ok" else logger.warning if status == "warning" else logger.error
+        log_fn = (
+            logger.info
+            if status == "ok"
+            else logger.warning
+            if status == "warning"
+            else logger.error
+        )
         log_fn(
             "Lifecycle step end",
             extra={

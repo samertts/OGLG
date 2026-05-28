@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from pathlib import Path
-from uuid import UUID, uuid4
+from uuid import uuid4
 
-import pytest
 from sqlalchemy.orm import Session
 
+from app.core.enums import BackupType
 from app.database.connection import DatabaseManager
 from app.database.models import Base
 from app.database.repositories import (
@@ -17,7 +17,6 @@ from app.database.repositories import (
 from app.services.audit_service import AuditService
 from app.services.backup_service import BackupService
 from app.services.dto import AuditEntryCreateDTO, BackupCreateDTO
-from app.core.enums import BackupType
 
 
 class TestAuditService:
@@ -151,9 +150,7 @@ class TestBackupService:
 
         db_mgr.dispose()
 
-    def test_verify_backup_integrity_ok(
-        self, in_memory_session: Session, tmp_path: Path
-    ) -> None:
+    def test_verify_backup_integrity_ok(self, in_memory_session: Session, tmp_path: Path) -> None:
         backup_repo = SQLAlchemyBackupRepository(in_memory_session)
 
         db_path = tmp_path / "source.db"

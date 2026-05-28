@@ -67,9 +67,7 @@ class ReadinessReport:
         }
 
         total_weight = sum(weights.get(c.tier, 1.0) for c in self.checks)
-        passed_weight = sum(
-            weights.get(c.tier, 1.0) for c in self.checks if c.passed
-        )
+        passed_weight = sum(weights.get(c.tier, 1.0) for c in self.checks if c.passed)
         return round(passed_weight / total_weight, 2) if total_weight > 0 else 1.0
 
     @property
@@ -252,9 +250,7 @@ class DeploymentReadinessValidator:
                         else f"Missing fonts: {', '.join(missing)}"
                     ),
                     recommendation=(
-                        "Bundle required font files in app/assets/fonts/"
-                        if not passed
-                        else ""
+                        "Bundle required font files in app/assets/fonts/" if not passed else ""
                     ),
                 )
             )
@@ -286,9 +282,7 @@ class DeploymentReadinessValidator:
                     passed=False,
                     tier=ReadinessTier.CRITICAL,
                     message=(
-                        "Configuration file missing"
-                        if config_path
-                        else "Config dir not configured"
+                        "Configuration file missing" if config_path else "Config dir not configured"
                     ),
                     recommendation="Create defaults.json in the config directory",
                 )

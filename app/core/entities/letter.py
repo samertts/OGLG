@@ -4,9 +4,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from app.core.enums import LetterStatus, Priority, LanguageTag
+from app.core.enums import LanguageTag, LetterStatus, Priority
 from app.core.value_objects.letter_number import LetterNumber
-from app.core.value_objects.sha256_hash import SHA256Hash
 
 
 @dataclass

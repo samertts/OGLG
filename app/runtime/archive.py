@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
 from app.utils.file_utils import ensure_directory
 from app.utils.logger import get_logger

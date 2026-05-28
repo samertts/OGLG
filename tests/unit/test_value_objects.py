@@ -1,8 +1,7 @@
 """Tests for domain value objects."""
 
-from datetime import date, datetime
-
 import uuid
+from datetime import date, datetime
 
 import pytest
 
