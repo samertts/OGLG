@@ -244,9 +244,17 @@ def main(argv: list[str] | None = None) -> None:
     )
 
     try:
-        from app.gui.main_window import run_gui
+        from PySide6.QtWidgets import QApplication
 
-        run_gui(container)
+        qt_app = QApplication(sys.argv)
+        qt_app.setApplicationName("oglg")
+        qt_app.setOrganizationName("IraqiGovernment")
+        qt_app.setApplicationVersion(container.settings.app_version)
+
+        from app.ui.app import launch_ui
+
+        launch_ui(qt_app, container, rtl=True)
+        sys.exit(qt_app.exec())
     except ImportError:
         logger.info("No GUI module found — running in headless mode")
         _run_headless_event_loop(container, state_machine, recovery_bootstrap)
