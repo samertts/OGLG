@@ -1,13 +1,23 @@
 """Windows deployment runtime support for the Correspondence System.
 
 Handles PyInstaller-aware path resolution, platform detection,
-startup validation, crash recovery, and RTL font management.
+startup validation, crash recovery, RTL font management, and
+deployment mode detection (portable / installed / development).
 """
 
+from app.deployment.asset_validator import AssetValidationResult, AssetValidator
 from app.deployment.fonts import (
     FontManager,
     get_bundled_fonts,
     register_application_fonts,
+)
+from app.deployment.install_detector import InstallDetectionResult, InstallDetector
+from app.deployment.path_strategy import (
+    DevelopmentPathStrategy,
+    InstalledPathStrategy,
+    PathStrategy,
+    PortablePathStrategy,
+    get_path_strategy,
 )
 from app.deployment.paths import (
     get_data_dir,
@@ -23,6 +33,14 @@ from app.deployment.platform import (
     is_windows_10_compatible,
     is_windows_11_compatible,
 )
+from app.deployment.portable_detector import PortableDetectionResult, PortableDetector
+from app.deployment.runtime_layout import (
+    RuntimeLayout,
+    create_runtime_layout,
+    get_standard_layout,
+    is_layout_complete,
+)
+from app.deployment.user_data_initializer import InitResult, UserDataInitializer
 from app.deployment.validation import (
     DeploymentValidationResult,
     run_startup_validation,
@@ -52,4 +70,21 @@ __all__ = [
     "FontManager",
     "get_bundled_fonts",
     "register_application_fonts",
+    "PortableDetector",
+    "PortableDetectionResult",
+    "InstallDetector",
+    "InstallDetectionResult",
+    "RuntimeLayout",
+    "create_runtime_layout",
+    "get_standard_layout",
+    "is_layout_complete",
+    "PathStrategy",
+    "DevelopmentPathStrategy",
+    "PortablePathStrategy",
+    "InstalledPathStrategy",
+    "get_path_strategy",
+    "AssetValidator",
+    "AssetValidationResult",
+    "UserDataInitializer",
+    "InitResult",
 ]

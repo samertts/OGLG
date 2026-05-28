@@ -10,8 +10,8 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from typing import Any
 
-from app.deployment.paths import DeploymentPaths, detect_deployment_mode
-from app.deployment.platform import get_platform_info
+from app.deployment.paths import get_deploy_mode as detect_deployment_mode
+from app.deployment.platform import detect_platform as get_platform_info
 from app.diagnostics.environment import EnvironmentCheck
 from app.utils.logger import get_logger
 
@@ -37,19 +37,17 @@ class EnvironmentDiagnosticsReport:
     def generate(
         cls,
         checks: list[EnvironmentCheck],
-        paths: DeploymentPaths | None = None,
     ) -> EnvironmentDiagnosticsReport:
         """Generate a diagnostic report from environment checks.
 
         Args:
             checks: List of EnvironmentCheck results.
-            paths: Optional DeploymentPaths for deployment mode detection.
 
         Returns:
             A populated EnvironmentDiagnosticsReport.
         """
         platform_info = get_platform_info()
-        deploy_mode = detect_deployment_mode(paths).value if paths else "unknown"
+        deploy_mode = detect_deployment_mode()
 
         passed = sum(1 for c in checks if c.passed)
         total = len(checks)
@@ -60,8 +58,8 @@ class EnvironmentDiagnosticsReport:
             platform={
                 "system": platform_info.system,
                 "version": platform_info.version,
-                "build": platform_info.build_number,
-                "arch": platform_info.architecture,
+                "build": platform_info.release,
+                "arch": platform_info.machine,
             },
             deploy_mode=deploy_mode,
             checks=[cls._check_to_dict(c) for c in checks],
