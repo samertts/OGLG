@@ -3,17 +3,13 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Protocol
 
-from app.domain.letters.enums import (
-    ArchiveStatus,
-    LetterClassification,
-    LetterPriority,
-    LetterStatus,
-    LetterType,
-)
+from app.domain.letters.archive_state import ArchiveState
+from app.domain.letters.attachment import Attachment
 from app.domain.letters.events import DomainEvent
-from app.domain.letters.value_objects import (
-    Attachment,
-)
+from app.domain.letters.letter import LetterType
+from app.domain.letters.letter_classification import LetterClassification
+from app.domain.letters.letter_priority import LetterPriority
+from app.domain.letters.letter_status import LetterStatus
 
 
 class LetterData(Protocol):
@@ -44,7 +40,7 @@ class LetterData(Protocol):
     archived_by_id: str | None
     deleted_at: datetime | None
     deleted_by_id: str | None
-    archive_status: ArchiveStatus
+    archive_state: ArchiveState
     version: int
 
 

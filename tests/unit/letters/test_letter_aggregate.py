@@ -1,23 +1,23 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 import pytest
 
-from app.domain.letters.aggregate import LetterAggregate
-from app.domain.letters.enums import (
-    ArchiveStatus,
-    LetterClassification,
-    LetterPriority,
-    LetterStatus,
-    LetterType,
-)
+from app.domain.letters.letter import Letter
+from app.domain.letters.letter_status import LetterStatus
+from app.domain.letters.letter_priority import LetterPriority
+from app.domain.letters.letter_classification import LetterClassification
+from app.domain.letters.letter import LetterType
+from app.domain.letters.archive_state import ArchiveState
 from app.domain.letters.events import EventType
-from app.domain.letters.value_objects import Attachment
+from app.domain.letters.attachment import Attachment
 
 
-class TestLetterAggregateCreate:
+class TestLetterCreate:
     def test_create_draft(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Test Subject",
             body="Test body content",
             sender_id="user-1",
@@ -27,15 +27,15 @@ class TestLetterAggregateCreate:
             created_by_id="user-1",
         )
         assert letter.status == LetterStatus.DRAFT
-        assert letter.archive_status == ArchiveStatus.ACTIVE
+        assert letter.archive_state == ArchiveState.ACTIVE
         assert letter.subject == "Test Subject"
         assert letter.version == 1
         assert len(letter._events) == 1
         assert letter._events[0].event_type == EventType.LETTER_CREATED
 
     def test_create_with_full_params(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.INCOMING,
+        letter = Letter.create(
+            letter_type=LetterType.INCOMING.value,
             subject="Incoming Letter",
             body="Body",
             sender_id="user-2",
@@ -49,13 +49,13 @@ class TestLetterAggregateCreate:
             recipient_name="Minister",
             recipient_department="Cabinet",
         )
-        assert letter.letter_type == LetterType.INCOMING
+        assert letter.letter_type == LetterType.INCOMING.value
         assert letter.priority == LetterPriority.HIGH
         assert letter.classification == LetterClassification.CONFIDENTIAL
 
     def test_create_outgoing(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Outgoing",
             body="Body",
             sender_id="u1",
@@ -64,11 +64,11 @@ class TestLetterAggregateCreate:
             department_id="D1",
             created_by_id="u1",
         )
-        assert letter.letter_type == LetterType.OUTGOING
+        assert letter.letter_type == LetterType.OUTGOING.value
 
     def test_create_internal(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.INTERNAL,
+        letter = Letter.create(
+            letter_type=LetterType.INTERNAL.value,
             subject="Internal",
             body="Body",
             sender_id="u1",
@@ -77,13 +77,13 @@ class TestLetterAggregateCreate:
             department_id="D1",
             created_by_id="u1",
         )
-        assert letter.letter_type == LetterType.INTERNAL
+        assert letter.letter_type == LetterType.INTERNAL.value
 
 
-class TestLetterAggregateLifecycle:
+class TestLetterLifecycle:
     def test_full_lifecycle_outgoing(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Full Lifecycle",
             body="Test",
             sender_id="u1",
@@ -116,8 +116,8 @@ class TestLetterAggregateLifecycle:
         assert letter.is_archived is False
 
     def test_reject_and_redraft(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Reject Test",
             body="Body",
             sender_id="u1",
@@ -140,8 +140,8 @@ class TestLetterAggregateLifecycle:
         assert letter.status == LetterStatus.PENDING_REVIEW
 
     def test_soft_delete(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Delete Test",
             body="Body",
             sender_id="u1",
@@ -152,11 +152,11 @@ class TestLetterAggregateLifecycle:
         )
         letter.soft_delete("u1", "No longer needed")
         assert letter.status == LetterStatus.DELETED
-        assert letter.archive_status == ArchiveStatus.SOFT_DELETED
+        assert letter.archive_state == ArchiveState.SOFT_DELETED
 
     def test_edit_draft(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Original",
             body="Original body",
             sender_id="u1",
@@ -171,8 +171,8 @@ class TestLetterAggregateLifecycle:
         assert letter.version == 2
 
     def test_cannot_edit_after_submit(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="No Edit",
             body="Body",
             sender_id="u1",
@@ -186,8 +186,8 @@ class TestLetterAggregateLifecycle:
             letter.edit("u1", subject="Trying to edit")
 
     def test_assign_number(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Number Test",
             body="Body",
             sender_id="u1",
@@ -200,8 +200,8 @@ class TestLetterAggregateLifecycle:
         assert letter.number == "MOH-2026-000001"
 
     def test_pop_events(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Events",
             body="Body",
             sender_id="u1",
@@ -217,8 +217,8 @@ class TestLetterAggregateLifecycle:
 
 class TestAttachments:
     def test_add_attachment(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Attachment Test",
             body="Body",
             sender_id="u1",
@@ -227,9 +227,9 @@ class TestAttachments:
             department_id="dept-1",
             created_by_id="u1",
         )
-        from datetime import datetime
         att = Attachment(
             id="att-1",
+            letter_id=letter.id,
             filename="doc.pdf",
             original_name="doc.pdf",
             mime_type="application/pdf",
@@ -244,8 +244,8 @@ class TestAttachments:
         assert len(letter.attachments) == 1
 
     def test_remove_attachment(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Remove Att",
             body="Body",
             sender_id="u1",
@@ -254,9 +254,9 @@ class TestAttachments:
             department_id="dept-1",
             created_by_id="u1",
         )
-        from datetime import datetime
         att = Attachment(
             id="att-1",
+            letter_id=letter.id,
             filename="doc.pdf",
             original_name="doc.pdf",
             mime_type="application/pdf",
@@ -272,8 +272,8 @@ class TestAttachments:
         assert len(letter.attachments) == 0
 
     def test_record_print(self) -> None:
-        letter = LetterAggregate.create(
-            letter_type=LetterType.OUTGOING,
+        letter = Letter.create(
+            letter_type=LetterType.OUTGOING.value,
             subject="Print Test",
             body="Body",
             sender_id="u1",

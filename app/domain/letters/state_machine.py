@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from app.domain.letters.enums import ArchiveStatus, LetterStatus
+from app.domain.letters.archive_state import ArchiveState
+from app.domain.letters.letter_status import LetterStatus
 
 
 class StateTransitionError(Exception):
@@ -25,12 +26,12 @@ _ALLOWED_LIFECYCLE: dict[LetterStatus, set[LetterStatus]] = {
     LetterStatus.DELETED: set(),
 }
 
-_ALLOWED_ARCHIVE: dict[ArchiveStatus, set[ArchiveStatus]] = {
-    ArchiveStatus.ACTIVE: {ArchiveStatus.SOFT_DELETED, ArchiveStatus.ARCHIVED},
-    ArchiveStatus.SOFT_DELETED: {ArchiveStatus.ACTIVE, ArchiveStatus.ARCHIVED, ArchiveStatus.PENDING_PURGE},
-    ArchiveStatus.ARCHIVED: {ArchiveStatus.ACTIVE, ArchiveStatus.SOFT_DELETED, ArchiveStatus.PENDING_PURGE},
-    ArchiveStatus.PENDING_PURGE: {ArchiveStatus.ACTIVE, ArchiveStatus.PURGED},
-    ArchiveStatus.PURGED: set(),
+_ALLOWED_ARCHIVE: dict[ArchiveState, set[ArchiveState]] = {
+    ArchiveState.ACTIVE: {ArchiveState.SOFT_DELETED, ArchiveState.ARCHIVED},
+    ArchiveState.SOFT_DELETED: {ArchiveState.ACTIVE, ArchiveState.ARCHIVED, ArchiveState.PENDING_PURGE},
+    ArchiveState.ARCHIVED: {ArchiveState.ACTIVE, ArchiveState.SOFT_DELETED, ArchiveState.PENDING_PURGE},
+    ArchiveState.PENDING_PURGE: {ArchiveState.ACTIVE, ArchiveState.PURGED},
+    ArchiveState.PURGED: set(),
 }
 
 
@@ -40,7 +41,7 @@ def validate_lifecycle_transition(current: LetterStatus, target: LetterStatus) -
         raise StateTransitionError(current.value, target.value)
 
 
-def validate_archive_transition(current: ArchiveStatus, target: ArchiveStatus) -> None:
+def validate_archive_transition(current: ArchiveState, target: ArchiveState) -> None:
     allowed = _ALLOWED_ARCHIVE.get(current)
     if allowed is None or target not in allowed:
         raise StateTransitionError(current.value, target.value)

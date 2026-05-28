@@ -1,50 +1,22 @@
-from __future__ import annotations
+"""Backward-compatible re-exports for the refactored domain layer.
+
+Enums have been moved to individual files:
+  - letter_status.py: LetterStatus
+  - letter_priority.py: LetterPriority
+  - letter_classification.py: LetterClassification
+  - delivery_status.py: DeliveryMethod, DeliveryStatus
+  - archive_state.py: ArchiveState (was ArchiveStatus)
+  - review_assignment.py: ReviewAction
+  - attachment.py: AttachmentType
+"""
 
 from enum import Enum
 
-
-class LetterType(Enum):
-    INCOMING = "INCOMING"
-    OUTGOING = "OUTGOING"
-    INTERNAL = "INTERNAL"
-
-
-class LetterStatus(Enum):
-    DRAFT = "DRAFT"
-    PENDING_REVIEW = "PENDING_REVIEW"
-    IN_REVIEW = "IN_REVIEW"
-    APPROVED = "APPROVED"
-    REJECTED = "REJECTED"
-    SENT = "SENT"
-    DELIVERED = "DELIVERED"
-    RECEIVED = "RECEIVED"
-    ARCHIVED = "ARCHIVED"
-    RESTORED = "RESTORED"
-    DELETED = "DELETED"
-
-
-class LetterPriority(Enum):
-    LOW = "LOW"
-    NORMAL = "NORMAL"
-    HIGH = "HIGH"
-    URGENT = "URGENT"
-    CRITICAL = "CRITICAL"
-
-
-class LetterClassification(Enum):
-    PUBLIC = "PUBLIC"
-    INTERNAL = "INTERNAL"
-    CONFIDENTIAL = "CONFIDENTIAL"
-    SECRET = "SECRET"
-    TOP_SECRET = "TOP_SECRET"
-
-
-class ArchiveStatus(Enum):
-    ACTIVE = "ACTIVE"
-    SOFT_DELETED = "SOFT_DELETED"
-    ARCHIVED = "ARCHIVED"
-    PENDING_PURGE = "PENDING_PURGE"
-    PURGED = "PURGED"
+from app.domain.letters.archive_state import ArchiveState as ArchiveStatus
+from app.domain.letters.letter import LetterType
+from app.domain.letters.letter_classification import LetterClassification
+from app.domain.letters.letter_priority import LetterPriority
+from app.domain.letters.letter_status import LetterStatus
 
 
 class ReviewAction(Enum):
@@ -70,3 +42,15 @@ class AttachmentType(Enum):
     SPREADSHEET = "SPREADSHEET"
     ARCHIVE = "ARCHIVE"
     OTHER = "OTHER"
+
+
+__all__ = [
+    "ArchiveStatus",
+    "AttachmentType",
+    "DeliveryMethod",
+    "LetterClassification",
+    "LetterPriority",
+    "LetterStatus",
+    "LetterType",
+    "ReviewAction",
+]

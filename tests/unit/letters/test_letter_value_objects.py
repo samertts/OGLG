@@ -10,6 +10,7 @@ from app.domain.letters.value_objects import (
     RoutingStep,
     Signature,
 )
+from app.domain.letters.delivery_status import DeliveryMethod
 
 
 class TestLetterNumber:
@@ -50,6 +51,7 @@ class TestAttachment:
         now = datetime.now()
         att = Attachment(
             id="att-1",
+            letter_id="letter-1",
             filename="doc.pdf",
             original_name="report.pdf",
             mime_type="application/pdf",
@@ -84,12 +86,12 @@ class TestSignature:
 class TestDeliveryMetadata:
     def test_create(self) -> None:
         dm = DeliveryMetadata(
-            method="COURIER",
+            method=DeliveryMethod.COURIER,
             recipient_name="Ministry of Health",
             recipient_department="Procurement",
             recipient_address="Baghdad",
         )
-        assert dm.method == "COURIER"
+        assert dm.method == DeliveryMethod.COURIER
         assert dm.delivered_at is None
 
 
