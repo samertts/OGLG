@@ -59,6 +59,7 @@ def make_approved_letter(letter_repo: InMemoryLetterRepo) -> str:
     )
     ls.submit_for_review(letter.id, "user-1")
     approval = ApprovalService(letter_repo, InMemoryAuditRepo(), lambda: InMemoryUoW())
+    approval.assign_reviewer(letter.id, "reviewer-1", "Reviewer 1", "Reviewer", "user-1")
     approval.start_review(letter.id, "reviewer-1")
     approval.approve(letter.id, "reviewer-1", "reviewer-1")
     return letter.id

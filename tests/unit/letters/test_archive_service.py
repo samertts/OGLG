@@ -44,6 +44,7 @@ def make_approvable_letter(letter_repo: InMemoryLetterRepo) -> str:
     ls.submit_for_review(letter.id, "user-1")
     approval = __import__("app.application.letters.approval_service", fromlist=["ApprovalService"])
     asvc = approval.ApprovalService(letter_repo, InMemoryAuditRepo(), lambda: InMemoryUoW())
+    asvc.assign_reviewer(letter.id, "reviewer-1", "Reviewer 1", "Reviewer", "user-1")
     asvc.start_review(letter.id, "reviewer-1")
     asvc.approve(letter.id, "reviewer-1", "reviewer-1")
     return letter.id
