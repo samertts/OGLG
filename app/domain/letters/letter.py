@@ -21,6 +21,7 @@ from app.domain.letters.events import (
     LetterRestored,
     LetterSubmitted,
 )
+from app.domain.letters.exceptions import LetterInvariantError
 from app.domain.letters.letter_classification import LetterClassification
 from app.domain.letters.letter_priority import LetterPriority
 from app.domain.letters.letter_status import LetterStatus
@@ -143,7 +144,7 @@ class Letter:
         recipient_address: str | None = None,
     ) -> None:
         if not is_editable(self.status):
-            raise ValueError(f"Cannot edit letter in status: {self.status.value}")
+            raise LetterInvariantError(self.id, f"Cannot edit letter in status: {self.status.value}")
         changes: dict[str, Any] = {}
         if subject is not None and subject != self.subject:
             changes["subject"] = {"old": self.subject, "new": subject}

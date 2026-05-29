@@ -4,6 +4,7 @@ from datetime import datetime
 
 import pytest
 
+from app.domain.letters.exceptions import LetterInvariantError
 from app.domain.letters.letter import Letter
 from app.domain.letters.letter_status import LetterStatus
 from app.domain.letters.letter_priority import LetterPriority
@@ -182,7 +183,7 @@ class TestLetterLifecycle:
             created_by_id="u1",
         )
         letter.submit_for_review("u1")
-        with pytest.raises(ValueError):
+        with pytest.raises(LetterInvariantError):
             letter.edit("u1", subject="Trying to edit")
 
     def test_assign_number(self) -> None:

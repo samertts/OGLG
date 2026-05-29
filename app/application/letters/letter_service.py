@@ -5,6 +5,7 @@ from typing import Any
 from loguru import logger
 
 from app.domain.letters.events import DomainEvent
+from app.domain.letters.exceptions import LetterInvariantError
 from app.domain.letters.interfaces import AuditRepository, LetterRepository
 from app.domain.letters.letter import Letter
 from app.domain.letters.letter_classification import LetterClassification
@@ -117,7 +118,7 @@ class LetterService:
                 recipient_department=recipient_department,
                 recipient_address=recipient_address,
             )
-        except ValueError as e:
+        except LetterInvariantError as e:
             raise LetterNotEditableError(letter_id, letter.status.value) from e
         with self._uow_factory() as uow:
             try:

@@ -20,6 +20,12 @@ from app.domain.letters.events import (
     LetterRestored,
     LetterSubmitted,
 )
+from app.domain.letters.exceptions import (
+    ArchiveOperationError,
+    LetterDomainError,
+    LetterInvariantError,
+    StateTransitionError,
+)
 from app.domain.letters.incoming_letter import IncomingLetter
 from app.domain.letters.interfaces import (
     AttachmentRepository,
@@ -37,8 +43,7 @@ from app.domain.letters.outgoing_letter import OutgoingLetter
 from app.domain.letters.review_assignment import ReviewAssignment
 from app.domain.letters.routing_step import RoutingStep
 from app.domain.letters.signature_metadata import SignatureMetadata
-from app.domain.letters.state_machine import (
-    StateTransitionError,
+from app.domain.letters.validators import (
     is_archivable,
     is_editable,
     is_reviewable,
@@ -48,6 +53,7 @@ from app.domain.letters.state_machine import (
 )
 
 __all__ = [
+    "ArchiveOperationError",
     "ArchiveState",
     "Attachment",
     "AttachmentRepository",
@@ -66,6 +72,8 @@ __all__ = [
     "LetterArchived",
     "LetterClassification",
     "LetterCreated",
+    "LetterDomainError",
+    "LetterInvariantError",
     "LetterDeleted",
     "LetterEdited",
     "LetterNumberAssigned",
