@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 import sqlite3
 import time
 from dataclasses import dataclass, field
@@ -400,6 +401,125 @@ class WindowsRealityValidator:
         finally:
             report.duration_seconds = time.monotonic() - start
 
+    # PyQt6 lifecycle: simulate widget create/destroy, detect orphan leaks
+    def validate_pyqt6_lifecycle(self) -> WindowsRealityReport:
+        start = time.monotonic()
+        report = WindowsRealityReport(scenario="pyqt6_lifecycle")
+        try:
+            widget_registry: dict[int, str] = {}
+            next_id = 0
+            destroyed: set[int] = set()
+
+            def create(name: str) -> int:
+                nonlocal next_id
+                wid = next_id
+                next_id += 1
+                widget_registry[wid] = name
+                return wid
+
+            def destroy(wid: int) -> None:
+                widget_registry.pop(wid, None)
+                destroyed.add(wid)
+
+            widgets = [create(f"widget_{i}") for i in range(50)]
+            for wid in widgets[:40]:
+                destroy(wid)
+
+            orphaned = [k for k in widget_registry]
+            total_created = next_id
+            total_destroyed = len(destroyed)
+            leak_free = len(orphaned) == 10
+
+            widget_registry.clear()
+            second_batch = [create(f"second_{i}") for i in range(30)]
+            for wid in second_batch:
+                destroy(wid)
+
+            final_orphans = len(widget_registry) == 0
+
+            report.checks["leak_detected"] = not leak_free
+            report.checks["orphan_count"] = len(orphaned) == 10
+            report.checks["final_cleanup"] = final_orphans
+            report.checks["total_created"] = total_created == 80
+            report.checks["total_destroyed"] = total_destroyed == 70
+
+            if final_orphans:
+                return report.success(
+                    f"PyQt6 lifecycle: {total_created} created, "
+                    f"{total_destroyed} destroyed, 0 final orphans"
+                )
+            return report.fail(
+                f"orphans={len(orphaned)}, final_cleanup={final_orphans}"
+            )
+        except Exception as e:
+            return report.fail(str(e))
+        finally:
+            report.duration_seconds = time.monotonic() - start
+
+    # Deployment rollback replay: backup → write → restore → verify
+    def validate_deployment_rollback_replay(self) -> WindowsRealityReport:
+        start = time.monotonic()
+        report = WindowsRealityReport(scenario="deployment_rollback_replay")
+        try:
+            deploy_dir = self._work / "deployment"
+            deploy_dir.mkdir(parents=True, exist_ok=True)
+
+            db = deploy_dir / "app.db"
+            conn = sqlite3.connect(str(db), timeout=10)
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("CREATE TABLE IF NOT EXISTS t (id INTEGER PRIMARY KEY, v TEXT)")
+            for i in range(40):
+                conn.execute("INSERT INTO t (v) VALUES (?)", (f"v1_{i}",))
+            conn.commit()
+            conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            conn.close()
+
+            pre_count = sqlite3.connect(str(db)).execute(
+                "SELECT COUNT(*) FROM t"
+            ).fetchone()[0]
+
+            backup = deploy_dir / "backup_app.db"
+            shutil.copy2(db, backup)
+
+            conn = sqlite3.connect(str(db), timeout=10)
+            conn.execute("PRAGMA journal_mode=WAL")
+            for i in range(20):
+                conn.execute("INSERT INTO t (v) VALUES (?)", (f"v2_{i}",))
+            conn.commit()
+            conn.close()
+
+            shutil.copy2(backup, db)
+
+            restored = sqlite3.connect(str(db), timeout=10)
+            restored.execute("PRAGMA journal_mode=WAL")
+            restored.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            post_count = restored.execute("SELECT COUNT(*) FROM t").fetchone()[0]
+            integrity = True
+            try:
+                row = restored.execute("PRAGMA integrity_check").fetchone()
+                integrity = row is not None and row[0] == "ok"
+            except Exception:
+                integrity = False
+            restored.close()
+
+            rollback_ok = post_count == pre_count
+
+            report.checks["pre_count"] = pre_count == 40
+            report.checks["rollback_matches"] = rollback_ok
+            report.checks["integrity"] = integrity
+
+            if rollback_ok and integrity:
+                return report.success(
+                    f"rollback: pre={pre_count}, post={post_count}, integrity OK"
+                )
+            return report.fail(
+                f"pre={pre_count}, post={post_count}, integrity={integrity}"
+            )
+        except Exception as e:
+            return report.fail(str(e))
+        finally:
+            report.duration_seconds = time.monotonic() - start
+
     def validate_all(self) -> list[WindowsRealityReport]:
         return [
             self.validate_ntfs_wal_behavior(),
@@ -411,4 +531,6 @@ class WindowsRealityValidator:
             self.validate_safe_mode_startup(),
             self.validate_low_ram_windows(),
             self.validate_interrupted_shutdown_replay(),
+            self.validate_pyqt6_lifecycle(),
+            self.validate_deployment_rollback_replay(),
         ]

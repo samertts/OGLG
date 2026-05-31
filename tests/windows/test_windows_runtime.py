@@ -68,13 +68,27 @@ class TestInterruptedShutdownReplay:
         assert r.passed, r.detail
 
 
+class TestPyQt6Lifecycle:
+    def test_pyqt6_lifecycle(self, tmp_path: Path):
+        v = WindowsRealityValidator(tmp_path)
+        r = v.validate_pyqt6_lifecycle()
+        assert r.passed, r.detail
+
+
+class TestDeploymentRollbackReplay:
+    def test_rollback(self, tmp_path: Path):
+        v = WindowsRealityValidator(tmp_path)
+        r = v.validate_deployment_rollback_replay()
+        assert r.passed, r.detail
+
+
 class TestValidateAll:
     def test_all_windows_scenarios(self, tmp_path: Path):
         v = WindowsRealityValidator(tmp_path)
         results = v.validate_all()
-        assert len(results) == 9
+        assert len(results) == 11
         passed = sum(1 for r in results if r.passed)
-        assert passed >= 8, f"passed={passed}/9: {[r.scenario for r in results if not r.passed]}"
+        assert passed >= 10, f"passed={passed}/11: {[r.scenario for r in results if not r.passed]}"
 
     def test_each_has_duration(self, tmp_path: Path):
         v = WindowsRealityValidator(tmp_path)
