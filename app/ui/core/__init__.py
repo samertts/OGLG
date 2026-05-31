@@ -6,6 +6,7 @@ from app.ui.core.archive_linker import ArchiveLink, ArchiveLinker
 from app.ui.core.async_bridge import AsyncBridge, AsyncTask, TaskHandle, TaskPriority
 from app.ui.core.attachment_handler import AttachmentHandler, AttachmentRef, AttachmentState
 from app.ui.core.bounded_lifecycle import BoundedLifecycle, LifecyclePhase
+from app.ui.core.pdf_generator import PdfGenerationState, PdfJob, PdfJobManager, PrintJobResult
 from app.ui.core.crash_safe_window import CrashSafeWindow, WindowGuard
 from app.ui.core.dashboard_service import DashboardService, OperationalDashboardState
 from app.ui.core.dialog_wrapper import DialogTransaction, TransactionSafeDialog
@@ -16,6 +17,15 @@ from app.ui.core.letter_workflow import (
     LetterState,
     NumberingPreview,
     WorkflowActionType,
+)
+from app.ui.core.print_models import (
+    DocumentSection,
+    DocumentTemplate,
+    FooterMetadata,
+    PageLayout,
+    PageNumbering,
+    PageOrientation,
+    PrintDocument,
 )
 from app.ui.core.operational_panels import (
     AuditPanelState,
@@ -32,6 +42,17 @@ from app.ui.core.replay_actions import ReplayAction, ReplayActionLog, ReplaySafe
 from app.ui.core.search_models import SearchFilterState, SearchPaginationState, SearchResultItem, SearchSessionState
 
 __all__ = [
+    "DocumentSection",
+    "DocumentTemplate",
+    "FooterMetadata",
+    "PageLayout",
+    "PageNumbering",
+    "PageOrientation",
+    "PdfGenerationState",
+    "PdfJob",
+    "PdfJobManager",
+    "PrintDocument",
+    "PrintJobResult",
     "ApprovalDecision",
     "ApprovalRoute",
     "ApprovalRouter",
