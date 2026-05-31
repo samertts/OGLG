@@ -1,0 +1,13 @@
+{
+    "organization_type": "university",
+    "branding": {
+        "app_name": "OGLG",
+        "app_org": "Iraq Ministry of Higher Education",
+        "theme": "default"
+    },
+    "federation_namespace": "edu.gov.iq",
+    "audit_namespace": "edu.gov.iq.audit",
+    "offline_mode": "relaxed",
+    "telemetry_mode": "local_only",
+    "replay_mode": "standard"
+}

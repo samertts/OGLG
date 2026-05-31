@@ -1,0 +1,13 @@
+{
+    "organization_type": "municipality",
+    "branding": {
+        "app_name": "OGLG",
+        "app_org": "Iraq Ministry of Municipalities",
+        "theme": "default"
+    },
+    "federation_namespace": "mun.gov.iq",
+    "audit_namespace": "mun.gov.iq.audit",
+    "offline_mode": "strict",
+    "telemetry_mode": "local_only",
+    "replay_mode": "standard"
+}

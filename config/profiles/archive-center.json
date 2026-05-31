@@ -1,0 +1,13 @@
+{
+    "organization_type": "archive-center",
+    "branding": {
+        "app_name": "OGLG",
+        "app_org": "Iraq National Archive Center",
+        "theme": "default"
+    },
+    "federation_namespace": "archive.gov.iq",
+    "audit_namespace": "archive.gov.iq.audit",
+    "offline_mode": "strict",
+    "telemetry_mode": "local_only",
+    "replay_mode": "archive"
+}

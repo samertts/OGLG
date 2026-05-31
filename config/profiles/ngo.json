@@ -1,0 +1,13 @@
+{
+    "organization_type": "NGO",
+    "branding": {
+        "app_name": "OGLG",
+        "app_org": "Non-Governmental Organization",
+        "theme": "default"
+    },
+    "federation_namespace": "ngo.iq",
+    "audit_namespace": "ngo.iq.audit",
+    "offline_mode": "relaxed",
+    "telemetry_mode": "local_only",
+    "replay_mode": "standard"
+}

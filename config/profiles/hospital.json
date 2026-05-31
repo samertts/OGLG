@@ -1,0 +1,13 @@
+{
+    "organization_type": "hospital",
+    "branding": {
+        "app_name": "OGLG",
+        "app_org": "Iraq Ministry of Health — Hospital Division",
+        "theme": "default"
+    },
+    "federation_namespace": "health.gov.iq",
+    "audit_namespace": "health.gov.iq.audit",
+    "offline_mode": "strict",
+    "telemetry_mode": "local_only",
+    "replay_mode": "full"
+}

@@ -1,0 +1,13 @@
+{
+    "organization_type": "regulated-private",
+    "branding": {
+        "app_name": "OGLG",
+        "app_org": "Regulated Private Entity",
+        "theme": "default"
+    },
+    "federation_namespace": "private.iq",
+    "audit_namespace": "private.iq.audit",
+    "offline_mode": "relaxed",
+    "telemetry_mode": "local_only",
+    "replay_mode": "minimal"
+}

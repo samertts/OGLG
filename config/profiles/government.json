@@ -1,0 +1,13 @@
+{
+    "organization_type": "government",
+    "branding": {
+        "app_name": "OGLG",
+        "app_org": "Iraq Ministry of Health",
+        "theme": "default"
+    },
+    "federation_namespace": "gov.iq",
+    "audit_namespace": "gov.iq.audit",
+    "offline_mode": "strict",
+    "telemetry_mode": "local_only",
+    "replay_mode": "full"
+}
