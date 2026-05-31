@@ -1,13 +1,24 @@
 from __future__ import annotations
 
 from app.ui.core.alert_service import Alert, AlertCategory, AlertService, AlertSeverity
-from app.ui.core.approval_routing import ApprovalDecision, ApprovalRoute, ApprovalRouter, ApprovalStep
+from app.ui.core.app_state_controller import (
+    AppStateController,
+    AppSystemState,
+    AuthGate,
+    ScreenAccess,
+    ScreenAvailabilityRule,
+)
+from app.ui.core.approval_routing import (
+    ApprovalDecision,
+    ApprovalRoute,
+    ApprovalRouter,
+    ApprovalStep,
+)
 from app.ui.core.archive_browser import ArchiveBrowseState, ArchiveEntryPreview, PreviewState
 from app.ui.core.archive_linker import ArchiveLink, ArchiveLinker
 from app.ui.core.async_bridge import AsyncBridge, AsyncTask, TaskHandle, TaskPriority
 from app.ui.core.attachment_handler import AttachmentHandler, AttachmentRef, AttachmentState
 from app.ui.core.bounded_lifecycle import BoundedLifecycle, LifecyclePhase
-from app.ui.core.pdf_generator import PdfGenerationState, PdfJob, PdfJobManager, PrintJobResult
 from app.ui.core.crash_safe_window import CrashSafeWindow, WindowGuard
 from app.ui.core.dashboard_service import DashboardService, OperationalDashboardState
 from app.ui.core.dialog_wrapper import DialogTransaction, TransactionSafeDialog
@@ -18,15 +29,6 @@ from app.ui.core.letter_workflow import (
     LetterState,
     NumberingPreview,
     WorkflowActionType,
-)
-from app.ui.core.print_models import (
-    DocumentSection,
-    DocumentTemplate,
-    FooterMetadata,
-    PageLayout,
-    PageNumbering,
-    PageOrientation,
-    PrintDocument,
 )
 from app.ui.core.operational_panels import (
     AuditPanelState,
@@ -39,6 +41,16 @@ from app.ui.core.operational_panels import (
     RuntimeMetricsPanelState,
     StartupIntegrityPanelState,
 )
+from app.ui.core.pdf_generator import PdfGenerationState, PdfJob, PdfJobManager, PrintJobResult
+from app.ui.core.print_models import (
+    DocumentSection,
+    DocumentTemplate,
+    FooterMetadata,
+    PageLayout,
+    PageNumbering,
+    PageOrientation,
+    PrintDocument,
+)
 from app.ui.core.replay_actions import ReplayAction, ReplayActionLog, ReplaySafeDispatcher
 from app.ui.core.safety_dialogs import (
     RollbackConfirmation,
@@ -46,13 +58,21 @@ from app.ui.core.safety_dialogs import (
     UnsafeOperationGuard,
     UnsafeOperationSeverity,
 )
-from app.ui.core.search_models import SearchFilterState, SearchPaginationState, SearchResultItem, SearchSessionState
+from app.ui.core.search_models import (
+    SearchFilterState,
+    SearchPaginationState,
+    SearchResultItem,
+    SearchSessionState,
+)
 
 __all__ = [
     "Alert",
     "AlertCategory",
     "AlertService",
     "AlertSeverity",
+    "AppStateController",
+    "AppSystemState",
+    "AuthGate",
     "DocumentSection",
     "DocumentTemplate",
     "FooterMetadata",
@@ -98,6 +118,8 @@ __all__ = [
     "QueuePanelState",
     "RollbackConfirmation",
     "SafetyDialogService",
+    "ScreenAccess",
+    "ScreenAvailabilityRule",
     "UnsafeOperationGuard",
     "UnsafeOperationSeverity",
     "RecoveryPanelState",
