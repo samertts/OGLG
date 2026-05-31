@@ -115,23 +115,27 @@ class TestAppStateController:
         ctrl = AppStateController()
         ctrl.system_state = AppSystemState.NORMAL
         ctrl.set_user_context(("admin",), True)
-        rule = ctrl.get_rule("diagnostics")
-        assert rule is not None
-        rule.requires_workflow_completion = ("startup_checks",)
-        assert ctrl.is_screen_available("diagnostics") == ScreenAccess.CONDITIONAL
+        rule = ScreenAvailabilityRule(
+            screen_id="needs_workflow", title="Needs Workflow",
+            requires_workflow_completion=("startup_checks",),
+        )
+        ctrl.register_rule(rule)
+        assert ctrl.is_screen_available("needs_workflow") == ScreenAccess.CONDITIONAL
         ctrl.complete_workflow("startup_checks")
-        assert ctrl.is_screen_available("diagnostics") == ScreenAccess.GRANTED
+        assert ctrl.is_screen_available("needs_workflow") == ScreenAccess.GRANTED
 
     def test_system_check_conditional(self):
         ctrl = AppStateController()
         ctrl.system_state = AppSystemState.NORMAL
         ctrl.set_user_context(("admin",), True)
-        rule = ctrl.get_rule("runtime_health")
-        assert rule is not None
-        rule.requires_system_check = "db_connected"
-        assert ctrl.is_screen_available("runtime_health") == ScreenAccess.CONDITIONAL
+        rule = ScreenAvailabilityRule(
+            screen_id="needs_check", title="Needs Check",
+            requires_system_check="db_connected",
+        )
+        ctrl.register_rule(rule)
+        assert ctrl.is_screen_available("needs_check") == ScreenAccess.CONDITIONAL
         ctrl.set_system_check("db_connected", True)
-        assert ctrl.is_screen_available("runtime_health") == ScreenAccess.GRANTED
+        assert ctrl.is_screen_available("needs_check") == ScreenAccess.GRANTED
 
     def test_can_navigate_grants_access(self):
         ctrl = AppStateController()
