@@ -10,9 +10,9 @@
 
 | Suite | Tests | Status |
 |---|---|---|
-| `tests/stress/` (P1–P6, R1–R6) | 142 | ✓ all pass |
+| `tests/stress/` (P1–P6, R1–R6, P-R2) | 153 | ✓ all pass |
 | `tests/backup/` (R2) | 10 | ✓ all pass |
-| **Total survivability suite** | **142** | **0 failures, 0 lint errors** |
+| **Total survivability suite** | **153** | **0 failures, 0 lint errors** |
 
 ---
 
@@ -66,6 +66,10 @@ Ministry/archive/laboratory/municipality deployment simulation, low-connectivity
 `app/core/stress/survivability.py` — SurvivabilityValidator: crash-recovery cycles (5 cycles with WAL truncation), deterministic queue replay (priority-ordered), WAL interruption replay (empty WAL wipe), corruption survival (DB byte corruption), low-memory runtime (64KB cache, 1024B pages), long-session endurance (10 batch checkpoints, 510 ops), concurrent operator replay (8 threads, deterministic), archive replay (30 SHA-256 snapshots), deterministic consistency (50 events, 3-run stability).  
 *11 tests*
 
+### P-R2 — Real Operator Pilot Workflows
+`app/core/stress/pilot_workflows.py` — PilotWorkflowValidator: correspondence lifecycle (draft→approval→archive→print replay), repeated save interruption, rapid operator switching, accidental duplicate submission detection, archive overload handling, invalid attachment rejection, concurrent numbering validation, session recovery continuation, operator rollback validation.  
+*11 tests*
+
 ---
 
 ## Architecture
@@ -89,13 +93,14 @@ app/
 │       ├── government_readiness.py    P6
 │       ├── institutional_simulation.py P4
 │       ├── deployment_simulation.py   ← R5
+│       ├── pilot_workflows.py         ← P-R2
 │       └── survivability.py           ← R6
 ├── deployment/               P3: installers, packaging, validation
 └── forensics/                P5: audit, anomaly, alert, dashboard
 scripts/release/verify.py     ← R1: offline verification CLI
 tests/
 ├── backup/                   ← R2
-└── stress/                   P1–P6, R1, R3–R6
+└── stress/                   P1–P6, R1, R3–R6, P-R2
 ```
 
 ---
