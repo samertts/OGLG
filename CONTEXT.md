@@ -10,9 +10,9 @@
 
 | Suite | Tests | Status |
 |---|---|---|
-| `tests/stress/` (P1–P6, R1–R6, P-R2) | 153 | ✓ all pass |
+| `tests/stress/` (P1–P6, R1–R6, P-R2, P-R3) | 164 | ✓ all pass |
 | `tests/backup/` (R2) | 10 | ✓ all pass |
-| **Total survivability suite** | **153** | **0 failures, 0 lint errors** |
+| **Total survivability suite** | **164** | **0 failures, 0 lint errors** |
 
 ---
 
@@ -70,6 +70,10 @@ Ministry/archive/laboratory/municipality deployment simulation, low-connectivity
 `app/core/stress/pilot_workflows.py` — PilotWorkflowValidator: correspondence lifecycle (draft→approval→archive→print replay), repeated save interruption, rapid operator switching, accidental duplicate submission detection, archive overload handling, invalid attachment rejection, concurrent numbering validation, session recovery continuation, operator rollback validation.  
 *11 tests*
 
+### P-R3 — Real Archive Ingestion
+`app/core/stress/archive_ingestion.py` — ArchiveIngestionValidator: large-scale import (500 snapshots), Arabic indexing (Arabic title/content/metadata), attachment-heavy ingestion (100 attachments per snapshot), archive replay (100-snapshot deterministic order), corrupted attachment isolation (hash comparison), deterministic pagination (3 disjoint pages of 10), FTS5 rebuild (bilingual Arabic/English FTS), long-session browsing (10 batches × 20 ops), compaction continuity (50→33 remaining, all valid).  
+*11 tests*
+
 ---
 
 ## Architecture
@@ -88,6 +92,7 @@ app/
 │   ├── governance/
 │   │   └── reporter.py       ← R4: health, replay, WAL, archive, federation, RBAC
 │   └── stress/
+│       ├── archive_ingestion.py       ← P-R3
 │       ├── database_stress.py         P1
 │       ├── qt_runtime_hardening.py    P2
 │       ├── government_readiness.py    P6
@@ -100,7 +105,7 @@ app/
 scripts/release/verify.py     ← R1: offline verification CLI
 tests/
 ├── backup/                   ← R2
-└── stress/                   P1–P6, R1, R3–R6, P-R2
+└── stress/                   P1–P6, R1, R3–R6, P-R2, P-R3
 ```
 
 ---
