@@ -10,9 +10,9 @@
 
 | Suite | Tests | Status |
 |---|---|---|
-| `tests/stress/` (P1–P6, R1–R6, P-R2, P-R3, P-R4) | 176 | ✓ all pass |
+| `tests/stress/` (P1–P6, R1–R6, P-R2, P-R3, P-R4, P-R5) | 186 | ✓ all pass |
 | `tests/backup/` (R2) | 10 | ✓ all pass |
-| **Total survivability suite** | **176** | **0 failures, 0 lint errors** |
+| **Total survivability suite** | **186** | **0 failures, 0 lint errors** |
 
 ---
 
@@ -78,6 +78,10 @@ Ministry/archive/laboratory/municipality deployment simulation, low-connectivity
 `app/core/stress/usb_offline_federation.py` — UsbOfflineValidator: USB exchange (manifest export/import via file), delayed replay reconciliation (2 batches → 80 pending), duplicate detection (re-import without errors), interrupted replay (partial syncs recover), low-bandwidth sync (max 3/batch, 10+ rounds), queue recovery (protocol crash handling), audit continuity (15 events, 1 session tracked), offline node recovery (5 missed cycles, 30 events queued), deterministic conflict replay (bidirectional exchange), bounded retry (5 prepares, stable size).  
 *12 tests*
 
+### P-R5 — Real Deployment Packages
+`app/core/stress/deployment_packages.py` — DeploymentPackageValidator: package spec verification (oglg.spec/setup.iss/build_portable.py), dependency preflight (Python/SQLite/env), rollback upgrade (version marker + backup cycle), offline bundle (7 dirs + portable writable), package fingerprinting (5-artifact SHA-256 manifest), corrupted deployment recovery (JSON corruption detection + restore), diagnostics (env/integrity/low-resource checks + JSON export), release replay (10-artifact deterministic BuildManifest replay).  
+*10 tests*
+
 ---
 
 ## Architecture
@@ -98,9 +102,7 @@ app/
 │   └── stress/
 │       ├── archive_ingestion.py       ← P-R3
 │       ├── database_stress.py         P1
-│       ├── qt_runtime_hardening.py    P2
-│       ├── government_readiness.py    P6
-│       ├── institutional_simulation.py P4
+│       ├── deployment_packages.py     ← P-R5
 │       ├── deployment_simulation.py   ← R5
 │       ├── pilot_workflows.py         ← P-R2
 │       ├── survivability.py           ← R6
@@ -110,7 +112,7 @@ app/
 scripts/release/verify.py     ← R1: offline verification CLI
 tests/
 ├── backup/                   ← R2
-└── stress/                   P1–P6, R1, R3–R6, P-R2, P-R3, P-R4
+└── stress/                   P1–P6, R1, R3–R6, P-R2, P-R3, P-R4, P-R5
 ```
 
 ---
