@@ -3,6 +3,7 @@ from app.core.stress.deployment_simulation import DeploymentReport, DeploymentSi
 from app.core.stress.government_readiness import GovernmentReadinessValidator, ReadinessReport
 from app.core.stress.institutional_simulation import InstitutionReport, InstitutionSimulator
 from app.core.stress.qt_runtime_hardening import QtRuntimeHardener, QtRuntimeReport
+from app.core.stress.survivability import SurvivabilityReport, SurvivabilityValidator
 
 __all__ = [
     "DatabaseStressSuite", "StressReport",
@@ -10,4 +11,5 @@ __all__ = [
     "GovernmentReadinessValidator", "ReadinessReport",
     "InstitutionReport", "InstitutionSimulator",
     "QtRuntimeHardener", "QtRuntimeReport",
+    "SurvivabilityValidator", "SurvivabilityReport",
 ]
