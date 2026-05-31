@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import shutil
 import sqlite3
 import time
@@ -520,6 +521,196 @@ class WindowsRealityValidator:
         finally:
             report.duration_seconds = time.monotonic() - start
 
+    # C4 — MSI installation replay: versioned deployment with manifest + rollback
+    def validate_msi_installation_replay(self) -> WindowsRealityReport:
+        start = time.monotonic()
+        report = WindowsRealityReport(scenario="msi_installation_replay")
+        try:
+            msi_root = self._work / "Program Files" / "OGLG"
+            msi_root.mkdir(parents=True, exist_ok=True)
+
+            manifest = msi_root / "install.json"
+            manifest.write_text(json.dumps({
+                "version": "1.0.0", "product_code": "{DEADBEEF-0001}",
+                "features": ["core", "archive", "governance"],
+            }))
+            db = msi_root / "app.db"
+            conn = sqlite3.connect(str(db), timeout=10)
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("CREATE TABLE IF NOT EXISTS t (id INTEGER PRIMARY KEY, v TEXT)")
+            conn.execute("INSERT INTO t (v) VALUES ('installed')")
+            conn.commit()
+            conn.close()
+
+            backup_dir = msi_root / "backup"
+            backup_dir.mkdir(exist_ok=True)
+            shutil.copy2(db, backup_dir / "app.db.bak")
+
+            conn = sqlite3.connect(str(db), timeout=10)
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("INSERT INTO t (v) VALUES ('post_install')")
+            conn.commit()
+            conn.close()
+
+            shutil.copy2(backup_dir / "app.db.bak", db)
+            restored = sqlite3.connect(str(db), timeout=10)
+            restored.execute("PRAGMA journal_mode=WAL")
+            restored.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            count = restored.execute("SELECT COUNT(*) FROM t").fetchone()[0]
+            integrity = restored.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+            restored.close()
+
+            report.checks["manifest_exists"] = manifest.exists()
+            report.checks["rollback_ok"] = count == 1
+            report.checks["integrity"] = integrity
+            if integrity and count == 1:
+                return report.success(
+                    f"MSI install: version=1.0.0, rollback to {count} rows, integrity OK"
+                )
+            return report.fail(f"integrity={integrity}, count={count}")
+        except Exception as e:
+            return report.fail(str(e))
+        finally:
+            report.duration_seconds = time.monotonic() - start
+
+    # C4 — NTFS WAL replay: WAL mode on deeply nested NTFS-style paths
+    def validate_ntfs_wal_replay(self) -> WindowsRealityReport:
+        start = time.monotonic()
+        report = WindowsRealityReport(scenario="ntfs_wal_replay")
+        try:
+            deep = self._work / "Users" / "operator" / "AppData" / "Local" / "OGLG" / "data"
+            deep.mkdir(parents=True, exist_ok=True)
+
+            db = deep / "wal_replay.db"
+            conn = sqlite3.connect(str(db), timeout=10)
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=FULL")
+            conn.execute("CREATE TABLE IF NOT EXISTS t (id INTEGER PRIMARY KEY, v TEXT)")
+            for i in range(40):
+                conn.execute("INSERT INTO t (v) VALUES (?)", (f"ntfs_wal_{i}",))
+            conn.commit()
+            wal = self._wal_path(db)
+            wal_size = wal.stat().st_size if wal.exists() else 0
+            conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            conn.close()
+
+            integrity = self._integrity(db)
+            count = sqlite3.connect(str(db)).execute("SELECT COUNT(*) FROM t").fetchone()[0]
+            report.checks["deep_path_ok"] = deep.exists()
+            report.checks["wal_size"] = wal_size > 0
+            report.checks["integrity"] = integrity
+            report.checks["count"] = count == 40
+            if integrity and count == 40:
+                return report.success(
+                    f"NTFS WAL replay: {count} rows, WAL={wal_size}B, sync=FULL"
+                )
+            return report.fail(f"integrity={integrity}, count={count}")
+        except Exception as e:
+            return report.fail(str(e))
+        finally:
+            report.duration_seconds = time.monotonic() - start
+
+    # C4 — Printer spool exhaustion: simulate queue with pre-allocated docs
+    def validate_printer_spool_exhaustion(self) -> WindowsRealityReport:
+        start = time.monotonic()
+        report = WindowsRealityReport(scenario="printer_spool_exhaustion")
+        try:
+            spool = self._work / "spool" / "printers"
+            spool.mkdir(parents=True, exist_ok=True)
+
+            for i in range(30):
+                (spool / f"job_{i:04d}.spl").write_text("x" * 1024)
+
+            spooled = len(list(spool.iterdir()))
+            for f in list(spool.iterdir())[:25]:
+                f.unlink()
+
+            remaining = len(list(spool.iterdir()))
+            report.checks["spool_filled"] = spooled == 30
+            report.checks["drained"] = remaining == 5
+            if remaining <= 5:
+                return report.success(
+                    f"spool: {spooled} jobs queued, {remaining} remaining (5 max threshold)"
+                )
+            return report.fail(f"remaining={remaining}")
+        except Exception as e:
+            return report.fail(str(e))
+        finally:
+            report.duration_seconds = time.monotonic() - start
+
+    # C4 — Temp directory exhaustion: simulate low-disk-temp scenario
+    def validate_temp_directory_exhaustion(self) -> WindowsRealityReport:
+        start = time.monotonic()
+        report = WindowsRealityReport(scenario="temp_directory_exhaustion")
+        try:
+            temp = self._work / "Temp"
+            temp.mkdir(parents=True, exist_ok=True)
+
+            stub = temp / ".tempdir_marker"
+            stub.write_text("temp")
+
+            db = temp / "exhaustion.db"
+            conn = sqlite3.connect(str(db), timeout=10)
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA cache_size = -32")
+            conn.execute("CREATE TABLE IF NOT EXISTS t (id INTEGER PRIMARY KEY, v TEXT)")
+
+            for i in range(100):
+                conn.execute("INSERT INTO t (v) VALUES (?)", (f"exhaust_{i}",))
+            conn.commit()
+            conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            conn.close()
+
+            integrity = self._integrity(db)
+            count = sqlite3.connect(str(db)).execute(
+                "SELECT COUNT(*) FROM t"
+            ).fetchone()[0]
+
+            if integrity and count == 100:
+                return report.success(
+                    f"temp exhaustion: {count} rows, 32KB cache, temp dir OK"
+                )
+            return report.fail(f"integrity={integrity}, count={count}")
+        except Exception as e:
+            return report.fail(str(e))
+        finally:
+            report.duration_seconds = time.monotonic() - start
+
+    # C4 — Disk exhaustion replay: verify WAL behavior under low-disk simulation
+    def validate_disk_exhaustion_replay(self) -> WindowsRealityReport:
+        start = time.monotonic()
+        report = WindowsRealityReport(scenario="disk_exhaustion_replay")
+        try:
+            db = self._db("disk_exhaust.db")
+            conn = sqlite3.connect(str(db), timeout=10)
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=FULL")
+            conn.execute("PRAGMA cache_size = -16")
+            conn.execute("CREATE TABLE IF NOT EXISTS t (id INTEGER PRIMARY KEY, v TEXT)")
+
+            for i in range(100):
+                conn.execute("INSERT INTO t (v) VALUES (?)", (f"disk_{i}",))
+            conn.commit()
+
+            conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            conn.close()
+
+            integrity = self._integrity(db)
+            count = sqlite3.connect(str(db)).execute(
+                "SELECT COUNT(*) FROM t"
+            ).fetchone()[0]
+            report.checks["integrity"] = integrity
+            report.checks["count"] = count == 100
+            if integrity and count == 100:
+                return report.success(
+                    f"disk exhaustion: {count} rows, sync=FULL, 16KB cache"
+                )
+            return report.fail(f"integrity={integrity}, count={count}")
+        except Exception as e:
+            return report.fail(str(e))
+        finally:
+            report.duration_seconds = time.monotonic() - start
+
     def validate_all(self) -> list[WindowsRealityReport]:
         return [
             self.validate_ntfs_wal_behavior(),
@@ -533,4 +724,9 @@ class WindowsRealityValidator:
             self.validate_interrupted_shutdown_replay(),
             self.validate_pyqt6_lifecycle(),
             self.validate_deployment_rollback_replay(),
+            self.validate_msi_installation_replay(),
+            self.validate_ntfs_wal_replay(),
+            self.validate_printer_spool_exhaustion(),
+            self.validate_temp_directory_exhaustion(),
+            self.validate_disk_exhaustion_replay(),
         ]

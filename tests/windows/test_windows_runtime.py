@@ -82,13 +82,48 @@ class TestDeploymentRollbackReplay:
         assert r.passed, r.detail
 
 
+class TestMsiInstallationReplay:
+    def test_msi(self, tmp_path: Path):
+        v = WindowsRealityValidator(tmp_path)
+        r = v.validate_msi_installation_replay()
+        assert r.passed, r.detail
+
+
+class TestNtfsWalReplay:
+    def test_ntfs_wal_replay(self, tmp_path: Path):
+        v = WindowsRealityValidator(tmp_path)
+        r = v.validate_ntfs_wal_replay()
+        assert r.passed, r.detail
+
+
+class TestPrinterSpoolExhaustion:
+    def test_spool(self, tmp_path: Path):
+        v = WindowsRealityValidator(tmp_path)
+        r = v.validate_printer_spool_exhaustion()
+        assert r.passed, r.detail
+
+
+class TestTempDirectoryExhaustion:
+    def test_temp_exhaust(self, tmp_path: Path):
+        v = WindowsRealityValidator(tmp_path)
+        r = v.validate_temp_directory_exhaustion()
+        assert r.passed, r.detail
+
+
+class TestDiskExhaustionReplay:
+    def test_disk_exhaust(self, tmp_path: Path):
+        v = WindowsRealityValidator(tmp_path)
+        r = v.validate_disk_exhaustion_replay()
+        assert r.passed, r.detail
+
+
 class TestValidateAll:
     def test_all_windows_scenarios(self, tmp_path: Path):
         v = WindowsRealityValidator(tmp_path)
         results = v.validate_all()
-        assert len(results) == 11
+        assert len(results) == 16
         passed = sum(1 for r in results if r.passed)
-        assert passed >= 10, f"passed={passed}/11: {[r.scenario for r in results if not r.passed]}"
+        assert passed >= 15, f"passed={passed}/16: {[r.scenario for r in results if not r.passed]}"
 
     def test_each_has_duration(self, tmp_path: Path):
         v = WindowsRealityValidator(tmp_path)
