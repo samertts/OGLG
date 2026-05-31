@@ -10,9 +10,10 @@
 
 | Suite | Tests | Status |
 |---|---|---|
-| `tests/stress/` (P1–P6, R1–R6, P-R2, P-R3, P-R4, P-R5) | 186 | ✓ all pass |
+| `tests/stress/` (P1–P6, R1–R6, P-R2–P-R6, F-R2–F-R6) | 248 | ✓ all pass |
+| `tests/windows/` (F-R1) | 13 | ✓ all pass |
 | `tests/backup/` (R2) | 10 | ✓ all pass |
-| **Total survivability suite** | **186** | **0 failures, 0 lint errors** |
+| **Total survivability suite** | **271** | **0 failures, 0 lint errors** |
 
 ---
 
@@ -82,7 +83,33 @@ Ministry/archive/laboratory/municipality deployment simulation, low-connectivity
 `app/core/stress/deployment_packages.py` — DeploymentPackageValidator: package spec verification (oglg.spec/setup.iss/build_portable.py), dependency preflight (Python/SQLite/env), rollback upgrade (version marker + backup cycle), offline bundle (7 dirs + portable writable), package fingerprinting (5-artifact SHA-256 manifest), corrupted deployment recovery (JSON corruption detection + restore), diagnostics (env/integrity/low-resource checks + JSON export), release replay (10-artifact deterministic BuildManifest replay).  
 *10 tests*
 
----
+### P-R6 — 30-Day Operational Replay
+`app/core/stress/operational_replay.py` — OperationalReplayValidator: long-session endurance (30-day × 17 ops, daily checkpoint, integrity verify), crash-recovery cycles (5 × WAL truncation), WAL interruption replay (empty WAL wipe), queue persistence (insert/checkpoint/reopen, priority-ordered), archive replay (30 SHA-256 snapshots with checksum verify), operator contention (10 concurrent threads × 50 ops), deterministic sync (3-node cross-verify), low-memory endurance (256KB cache, 30-day × 20 ops), audit continuity (day-by-day tracking, 30-day consistency), final deterministic consistency (50 events, 3-run stability).  
+*12 tests*
+
+### F-R1 — Real Windows Execution
+`app/platform/windows/runtime.py` + `tests/windows/` — WindowsRealityValidator: NTFS WAL behavior, file-lock recovery, portable deployment, path normalization, printer subsystem, Arabic Unicode FS, safe-mode startup, low-RAM Windows, interrupted shutdown replay, PyQt6 lifecycle replay, deployment rollback replay.  
+*13 tests*
+
+### F-R2 — Real Archive Scale Validation
+`app/core/stress/archive_scale.py` — ArchiveScaleValidator: multi-million record simulation (100K rows in 50 batches), heavy attachment indexing (200 × 4KB payloads), large FTS5 bilingual replay (500 docs, Arabic/English), deterministic pagination endurance (50 pages × 100), archive replay reconstruction (1000 SHA-256 snapshots), WAL growth endurance (10K rows, bounded peak), long-session archive browsing (200 ops × 10 sessions), attachment corruption isolation, replay-safe archive recovery, bounded cache persistence (32KB cache, 512B pages).  
+*12 tests*
+
+### F-R3 — Real Power Failure Recovery
+`app/core/stress/power_failure.py` — PowerFailureValidator: forced shutdown during WAL write, interrupted checkpoint replay, unsafe power-loss simulation, queue replay interruption, archive replay interruption, recovery-loop validation (10 cycles), rollback continuity replay, partial-write recovery (truncated WAL), startup repair continuity (5 cycles), deterministic crash replay (3-run stability).  
+*12 tests*
+
+### F-R4 — Real Operator Endurance
+`app/core/stress/operator_endurance.py` — OperatorEnduranceValidator: 30-day operator replay (120 ops, 30 days), repeated draft interruptions (20 cycles), rapid concurrent save replay (500 saves), approval/archive contention (300 ops, 3 stages), print interruption replay, duplicate workflow recovery (30 unique), invalid attachment handling (4 accepted/3 rejected), operator session recovery, archive overload recovery (2000 snapshots, 32KB cache), replay continuity verification (3-run).  
+*12 tests*
+
+### F-R5 — Real Federation Recovery
+`app/core/stress/federation_recovery.py` — FederationRecoveryValidator: delayed USB synchronization (50-node replication), duplicate replay reconciliation (30 dedup events), node collision replay (20 collisions, first-writer-wins), interrupted federation recovery (40 events), low-bandwidth replay endurance (10 batches × 5), queue reconciliation replay (60 events, 3 priorities), audit continuity validation (40 SHA-256 checksums), deterministic conflict replay (3-run stability), bounded retry continuity (5 attempts), offline recovery validation (5 cycles × 10).  
+*12 tests*
+
+### F-R6 — Final Reality Validation
+`app/core/stress/final_reality.py` — FinalRealityValidator: full deployment replay (180 ops, 6 subsystems), repeated crash cycles (10 cycles × 20 ops), long-session endurance replay (250 ops × 5 sessions), WAL interruption replay (60 ops), replay divergence validation (3-run identical), deterministic archive replay (30 SHA-256 checksums), deployment rollback replay (20→20 restored), low-resource survivability (3000 rows, 16KB cache), final audit continuity validation (50 events, 3-run), real-environment consistency verification (6 keys, 3-run identical).  
+*12 tests*
 
 ## Architecture
 
@@ -101,18 +128,28 @@ app/
 │   │   └── reporter.py       ← R4: health, replay, WAL, archive, federation, RBAC
 │   └── stress/
 │       ├── archive_ingestion.py       ← P-R3
+│       ├── archive_scale.py           ← F-R2
 │       ├── database_stress.py         P1
 │       ├── deployment_packages.py     ← P-R5
 │       ├── deployment_simulation.py   ← R5
+│       ├── federation_recovery.py     ← F-R5
+│       ├── final_reality.py           ← F-R6
+│       ├── operational_replay.py      ← P-R6
+│       ├── operator_endurance.py      ← F-R4
 │       ├── pilot_workflows.py         ← P-R2
+│       ├── power_failure.py           ← F-R3
 │       ├── survivability.py           ← R6
 │       └── usb_offline_federation.py  ← P-R4
 ├── deployment/               P3: installers, packaging, validation
-└── forensics/                P5: audit, anomaly, alert, dashboard
+├── forensics/                P5: audit, anomaly, alert, dashboard
+└── platform/
+    └── windows/
+        └── runtime.py         ← F-R1: Windows reality validator
 scripts/release/verify.py     ← R1: offline verification CLI
 tests/
 ├── backup/                   ← R2
-└── stress/                   P1–P6, R1, R3–R6, P-R2, P-R3, P-R4, P-R5
+├── stress/                   P1–P6, R1, R3–R6, P-R2–P-R6, F-R2–F-R6
+└── windows/                  ← F-R1
 ```
 
 ---
@@ -130,6 +167,9 @@ tests/
 | Offline federation replay remains deterministic | ✓ cross-institution, low-connectivity |
 | Restore validation remains consistent | ✓ hot/cold/WAL/archive/rollback |
 | Concurrent workflows remain stable | ✓ 10-operator contention |
+| Windows runtime remains stable | ✓ NTFS, file-lock, Arabic FS, PyQt6 lifecycle |
+| Archive scale remains bounded | ✓ 100K records, bounded WAL, 32KB cache |
+| Power failure recovery remains reliable | ✓ forced shutdown, partial write, crash loops |
 
 ---
 
