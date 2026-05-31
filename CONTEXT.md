@@ -10,9 +10,9 @@
 
 | Suite | Tests | Status |
 |---|---|---|
-| `tests/stress/` (P1–P6, R1–R6, P-R2, P-R3) | 164 | ✓ all pass |
+| `tests/stress/` (P1–P6, R1–R6, P-R2, P-R3, P-R4) | 176 | ✓ all pass |
 | `tests/backup/` (R2) | 10 | ✓ all pass |
-| **Total survivability suite** | **164** | **0 failures, 0 lint errors** |
+| **Total survivability suite** | **176** | **0 failures, 0 lint errors** |
 
 ---
 
@@ -74,6 +74,10 @@ Ministry/archive/laboratory/municipality deployment simulation, low-connectivity
 `app/core/stress/archive_ingestion.py` — ArchiveIngestionValidator: large-scale import (500 snapshots), Arabic indexing (Arabic title/content/metadata), attachment-heavy ingestion (100 attachments per snapshot), archive replay (100-snapshot deterministic order), corrupted attachment isolation (hash comparison), deterministic pagination (3 disjoint pages of 10), FTS5 rebuild (bilingual Arabic/English FTS), long-session browsing (10 batches × 20 ops), compaction continuity (50→33 remaining, all valid).  
 *11 tests*
 
+### P-R4 — USB + Offline Federation Reality
+`app/core/stress/usb_offline_federation.py` — UsbOfflineValidator: USB exchange (manifest export/import via file), delayed replay reconciliation (2 batches → 80 pending), duplicate detection (re-import without errors), interrupted replay (partial syncs recover), low-bandwidth sync (max 3/batch, 10+ rounds), queue recovery (protocol crash handling), audit continuity (15 events, 1 session tracked), offline node recovery (5 missed cycles, 30 events queued), deterministic conflict replay (bidirectional exchange), bounded retry (5 prepares, stable size).  
+*12 tests*
+
 ---
 
 ## Architecture
@@ -99,13 +103,14 @@ app/
 │       ├── institutional_simulation.py P4
 │       ├── deployment_simulation.py   ← R5
 │       ├── pilot_workflows.py         ← P-R2
-│       └── survivability.py           ← R6
+│       ├── survivability.py           ← R6
+│       └── usb_offline_federation.py  ← P-R4
 ├── deployment/               P3: installers, packaging, validation
 └── forensics/                P5: audit, anomaly, alert, dashboard
 scripts/release/verify.py     ← R1: offline verification CLI
 tests/
 ├── backup/                   ← R2
-└── stress/                   P1–P6, R1, R3–R6, P-R2, P-R3
+└── stress/                   P1–P6, R1, R3–R6, P-R2, P-R3, P-R4
 ```
 
 ---

@@ -6,6 +6,7 @@ from app.core.stress.institutional_simulation import InstitutionReport, Institut
 from app.core.stress.pilot_workflows import PilotWorkflowReport, PilotWorkflowValidator
 from app.core.stress.qt_runtime_hardening import QtRuntimeHardener, QtRuntimeReport
 from app.core.stress.survivability import SurvivabilityReport, SurvivabilityValidator
+from app.core.stress.usb_offline_federation import UsbOfflineReport, UsbOfflineValidator
 
 __all__ = [
     "ArchiveIngestionValidator", "IngestionReport",
@@ -16,4 +17,5 @@ __all__ = [
     "PilotWorkflowValidator", "PilotWorkflowReport",
     "QtRuntimeHardener", "QtRuntimeReport",
     "SurvivabilityValidator", "SurvivabilityReport",
+    "UsbOfflineValidator", "UsbOfflineReport",
 ]
