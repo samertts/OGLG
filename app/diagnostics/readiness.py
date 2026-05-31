@@ -95,6 +95,33 @@ class ReadinessReport:
         }
 
 
+class _DictPathsAdapter:
+    """Normalizes dict access to attribute access for readiness checks.
+
+    Maps attribute names like data_dir, database_dir to dict keys
+    like "data", "database", with safe None defaults.
+    """
+    _KEY_MAP = {
+        "data_dir": "data",
+        "database_dir": "database",
+        "log_dir": "logs",
+        "temp_dir": "temp",
+        "archives_dir": "archives",
+        "plugins_dir": "plugins",
+        "config_dir": "config",
+        "migrations_dir": "migrations",
+    }
+
+    def __init__(self, data: dict[str, object]) -> None:
+        self._data = data
+
+    def __getattr__(self, name: str) -> object:
+        if name.startswith("_"):
+            raise AttributeError(name)
+        key = self._KEY_MAP.get(name, name)
+        return self._data.get(key)
+
+
 class DeploymentReadinessValidator:
     """Validates deployment target readiness.
 
@@ -112,10 +139,13 @@ class DeploymentReadinessValidator:
 
     def __init__(
         self,
-        paths: Any,  # DeploymentPaths-like object
+        paths: Any,  # DeploymentPaths-like object or dict
         font_manager: Any | None = None,
     ) -> None:
-        self.paths = paths
+        if isinstance(paths, dict):
+            self.paths = _DictPathsAdapter(paths)
+        else:
+            self.paths = paths
         self.font_manager = font_manager
 
     def validate(self) -> ReadinessReport:

@@ -39,7 +39,7 @@ def run_startup_validation(portable: bool = False) -> DeploymentValidationResult
     Returns:
         DeploymentValidationResult with check results.
     """
-    result = DeploymentValidationResult()
+    result = DeploymentValidationResult(passed=False)
 
     _check_platform(result)
     _check_directories(result, portable)

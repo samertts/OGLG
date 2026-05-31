@@ -189,7 +189,7 @@ def main(argv: list[str] | None = None) -> None:
     lifecycle.begin_step("crash_recovery")
     recovery_bootstrap = CrashRecoveryBootstrap(
         data_dirs=container.data_dirs,
-        db_path=container.settings.db_path,
+        db_path=container.settings.database_path,
     )
     recovery_result = recovery_bootstrap.run_recovery()
     if recovery_result.recovered:
