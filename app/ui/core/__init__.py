@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from app.ui.core.alert_service import Alert, AlertCategory, AlertService, AlertSeverity
 from app.ui.core.approval_routing import ApprovalDecision, ApprovalRoute, ApprovalRouter, ApprovalStep
 from app.ui.core.archive_browser import ArchiveBrowseState, ArchiveEntryPreview, PreviewState
 from app.ui.core.archive_linker import ArchiveLink, ArchiveLinker
@@ -39,9 +40,19 @@ from app.ui.core.operational_panels import (
     StartupIntegrityPanelState,
 )
 from app.ui.core.replay_actions import ReplayAction, ReplayActionLog, ReplaySafeDispatcher
+from app.ui.core.safety_dialogs import (
+    RollbackConfirmation,
+    SafetyDialogService,
+    UnsafeOperationGuard,
+    UnsafeOperationSeverity,
+)
 from app.ui.core.search_models import SearchFilterState, SearchPaginationState, SearchResultItem, SearchSessionState
 
 __all__ = [
+    "Alert",
+    "AlertCategory",
+    "AlertService",
+    "AlertSeverity",
     "DocumentSection",
     "DocumentTemplate",
     "FooterMetadata",
@@ -85,6 +96,10 @@ __all__ = [
     "PanelSeverity",
     "PreviewState",
     "QueuePanelState",
+    "RollbackConfirmation",
+    "SafetyDialogService",
+    "UnsafeOperationGuard",
+    "UnsafeOperationSeverity",
     "RecoveryPanelState",
     "ReplayAction",
     "ReplayActionLog",
