@@ -1,0 +1,75 @@
+
+This file lists modules PyInstaller was not able to find. This does not
+necessarily mean these modules are required for running your program. Both
+Python's standard library and 3rd-party Python packages often conditionally
+import optional modules, some of which may be available only on certain
+platforms.
+
+Types of import:
+* top-level: imported at the top-level - look at these first
+* conditional: imported within an if-statement
+* delayed: imported within a function
+* optional: imported within a try-except-statement
+
+IMPORTANT: Do NOT post this list to the issue-tracker. Use it as a basis for
+            tracking down the missing module yourself. Thanks!
+
+missing module named _winapi - imported by encodings (delayed, conditional, optional), ntpath (optional), subprocess (optional), multiprocessing.connection (optional), multiprocessing.spawn (delayed, conditional), multiprocessing.reduction (conditional), multiprocessing.shared_memory (conditional), multiprocessing.heap (conditional), multiprocessing.popen_spawn_win32 (top-level), asyncio.windows_events (top-level), asyncio.windows_utils (top-level), mimetypes (optional)
+missing module named msvcrt - imported by subprocess (optional), multiprocessing.spawn (delayed, conditional), multiprocessing.popen_spawn_win32 (top-level), asyncio.windows_events (top-level), asyncio.windows_utils (top-level), getpass (optional)
+missing module named 'typing.io' - imported by importlib.resources (top-level)
+missing module named org - imported by pickle (optional)
+missing module named _frozen_importlib_external - imported by importlib._bootstrap (delayed), importlib (optional), importlib.abc (optional), zipimport (top-level)
+excluded module named _frozen_importlib - imported by importlib (optional), importlib.abc (optional), zipimport (top-level)
+missing module named pep517 - imported by importlib.metadata (delayed)
+missing module named winreg - imported by importlib._bootstrap_external (conditional), platform (delayed, optional), mimetypes (optional), urllib.request (delayed, conditional, optional), pygments.formatters.img (optional)
+missing module named nt - imported by os (delayed, conditional, optional), ntpath (optional), shutil (conditional), importlib._bootstrap_external (conditional), ctypes (delayed, conditional)
+missing module named 'org.python' - imported by copy (optional), xml.sax (delayed, conditional)
+missing module named _scproxy - imported by urllib.request (conditional)
+missing module named 'java.lang' - imported by platform (delayed, optional), xml.sax._exceptions (conditional)
+missing module named multiprocessing.BufferTooShort - imported by multiprocessing (top-level), multiprocessing.connection (top-level)
+missing module named multiprocessing.AuthenticationError - imported by multiprocessing (top-level), multiprocessing.connection (top-level)
+missing module named multiprocessing.get_context - imported by multiprocessing (top-level), multiprocessing.pool (top-level), multiprocessing.managers (top-level), multiprocessing.sharedctypes (top-level), loguru._logger (top-level)
+missing module named multiprocessing.TimeoutError - imported by multiprocessing (top-level), multiprocessing.pool (top-level)
+missing module named multiprocessing.set_start_method - imported by multiprocessing (top-level), multiprocessing.spawn (top-level)
+missing module named multiprocessing.get_start_method - imported by multiprocessing (top-level), multiprocessing.spawn (top-level)
+missing module named multiprocessing.current_process - imported by multiprocessing (top-level), loguru._logger (top-level)
+missing module named pyimod02_importers - imported by /home/samertts/workspace/projects/oglg/venv/lib/python3.10/site-packages/PyInstaller/hooks/rthooks/pyi_rth_pkgutil.py (delayed)
+missing module named 'PySide6.QtWidgets' - imported by app.ui.navigation.router (optional), app.ui.controllers.shell_controller (optional), app.ui.dialogs.dialog_framework (optional), app.ui.dialogs.notification_toast (optional), app.ui.layouts.dpi_scaling (optional), app.ui.navigation.screen_router (optional), app.ui.navigation.sidebar (optional), app.ui.shell.header_toolbar (optional), app.ui.shell.status_bar (optional), app.ui.theme.icon_strategy (optional), app.ui.theme.theme_manager (optional), app.ui.widgets.page_container (optional), app.ui.widgets.about_screen (optional), app.ui.widgets.archive_browser_screen (optional), app.ui.widgets.backup_center_screen (optional), app.ui.widgets.stat_card (optional), app.ui.widgets.dashboard_screen (optional), app.ui.widgets.diagnostics_screen (optional), app.ui.widgets.letter_editor_screen (optional), app.ui.widgets.runtime_health_screen (optional), app.ui.widgets.search_screen (optional), app.ui.widgets.settings_screen (optional), app.ui.widgets.user_management_screen (optional), app.ui.widgets.busy_indicator (optional), app.ui.widgets.mode_indicator (optional), app.ui.widgets.runtime_indicator (optional), app.ui.shell.main_window (optional), app.ui.shell.splash_screen (optional), app.ui.app (optional)
+missing module named 'PySide6.QtCore' - imported by app.ui.viewmodels.screen_viewmodels (delayed, optional), app.ui.navigation.navigation_service (optional), app.ui.navigation.router (optional), app.ui.dialogs.dialog_framework (optional), app.ui.dialogs.notification_toast (optional), app.ui.layouts.dpi_scaling (optional), app.ui.navigation.screen_router (optional), app.ui.navigation.sidebar (optional), app.ui.shell.header_toolbar (optional), app.ui.shell.status_bar (optional), app.ui.theme.icon_strategy (optional), app.ui.theme.theme_manager (optional), app.ui.widgets.page_container (optional), app.ui.widgets.about_screen (optional), app.ui.widgets.stat_card (optional), app.ui.widgets.dashboard_screen (optional), app.ui.widgets.busy_indicator (optional), app.ui.widgets.mode_indicator (optional), app.ui.widgets.runtime_indicator (optional), app.ui.shell.main_window (optional), app.ui.shell.splash_screen (optional), app.ui.app (optional)
+missing module named 'PySide6.QtGui' - imported by app.ui.dialogs.dialog_framework (optional), app.ui.dialogs.notification_toast (optional), app.ui.shell.header_toolbar (optional), app.ui.theme.font_manager (optional), app.ui.theme.icon_strategy (delayed, optional), app.ui.theme.theme_manager (delayed, optional), app.ui.widgets.page_container (optional), app.ui.widgets.busy_indicator (optional), app.ui.widgets.runtime_indicator (optional), app.ui.shell.main_window (optional), app.ui.shell.splash_screen (optional)
+missing module named win32_setctime - imported by loguru._ctime_functions (delayed, conditional)
+missing module named aiocontextvars - imported by loguru._contextvars (delayed, conditional)
+missing module named apport_python_hook - imported by exceptiongroup._formatting (conditional)
+missing module named _overlapped - imported by asyncio.windows_events (top-level)
+missing module named asyncio.DefaultEventLoopPolicy - imported by asyncio (delayed, conditional), asyncio.events (delayed, conditional)
+missing module named annotationlib - imported by sqlalchemy.util.compat (conditional), typing_extensions (conditional)
+missing module named 'colorama.winterm' - imported by loguru._colorama (delayed, optional)
+missing module named colorama - imported by loguru._colorama (delayed)
+missing module named IPython - imported by loguru._colorama (delayed, conditional, optional)
+missing module named ipykernel - imported by loguru._colorama (delayed, conditional, optional)
+missing module named vms_lib - imported by platform (delayed, optional)
+missing module named java - imported by platform (delayed)
+missing module named _winreg - imported by platform (delayed, optional), pygments.formatters.img (optional)
+missing module named PySide6 - imported by app.main (delayed, optional)
+missing module named psutil - imported by app.diagnostics.environment (delayed, optional)
+missing module named importlib_metadata - imported by sqlalchemy.util.compat (conditional)
+missing module named pysqlcipher3 - imported by sqlalchemy.dialects.sqlite.pysqlcipher (delayed)
+missing module named sqlcipher3 - imported by sqlalchemy.dialects.sqlite.pysqlcipher (delayed, optional)
+missing module named 'psycopg.pq' - imported by sqlalchemy.dialects.postgresql.psycopg (delayed)
+missing module named 'psycopg.types' - imported by sqlalchemy.dialects.postgresql.psycopg (delayed, conditional)
+missing module named 'psycopg.adapt' - imported by sqlalchemy.dialects.postgresql.psycopg (delayed, conditional)
+missing module named psycopg - imported by sqlalchemy.dialects.postgresql.psycopg (delayed, conditional)
+missing module named asyncpg - imported by sqlalchemy.dialects.postgresql.asyncpg (delayed)
+missing module named oracledb - imported by sqlalchemy.dialects.oracle.oracledb (delayed, conditional)
+missing module named cx_Oracle - imported by sqlalchemy.dialects.oracle.cx_oracle (delayed)
+missing module named mysql - imported by sqlalchemy.dialects.mysql.mysqlconnector (delayed, conditional, optional)
+missing module named asyncmy - imported by sqlalchemy.dialects.mysql.asyncmy (delayed)
+missing module named pymysql - imported by sqlalchemy.dialects.mysql.aiomysql (delayed)
+missing module named psycopg2 - imported by sqlalchemy.dialects.postgresql.psycopg2 (delayed), sqlalchemy (top-level)
+missing module named pygments.lexers.PrologLexer - imported by pygments.lexers (top-level), pygments.lexers.cplint (top-level)
+missing module named chardet - imported by pygments.lexer (delayed, conditional, optional)
+missing module named ctags - imported by pygments.formatters.html (optional)
+missing module named numpy - imported by PIL._typing (conditional, optional)
+missing module named olefile - imported by PIL.FpxImagePlugin (top-level), PIL.MicImagePlugin (top-level)
+missing module named defusedxml - imported by PIL.Image (optional)
+missing module named tomllib - imported by alembic.util.compat (conditional)
